@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -81,5 +80,4 @@ public class PokypatelDviz : MonoBehaviour
         // Устанавливаем новую цель 
         SetTargetPoint(TargetPoint[currentTargetIndex]);
     }
-    
 }
