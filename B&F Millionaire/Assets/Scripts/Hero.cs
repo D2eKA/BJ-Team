@@ -4,8 +4,8 @@ using UnityEngine;
 public class Hero : MonoBehaviour
 {
     [SerializeField] private float speed = 1f;
-    [SerializeField] private float interactionRadius = 1f; // Радиус взаимодействия
-    [SerializeField] private LayerMask interactableLayer;  // Слой для объектов, с которыми можно взаимодействовать
+    //[SerializeField] private float interactionRadius = 1f; // Радиус взаимодействия
+    //[SerializeField] private LayerMask interactableLayer;  // Слой для объектов, с которыми можно взаимодействовать
 
     private Rigidbody2D rb;
     private SpriteRenderer sprite;

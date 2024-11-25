@@ -6,6 +6,7 @@ TagManager:
   tags:
   - apple
   - green_grape
+  - Shelf
   layers:
   - Default
   - TransparentFX
