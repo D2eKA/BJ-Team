@@ -6,8 +6,11 @@ public class Item : MonoBehaviour
 {
     public enum ItemType
     {
+        None,
         Cucumber,
         Tomato,
-        Eggplant
+        Eggplant,
+        Corn,
+        Potato
     }
 }

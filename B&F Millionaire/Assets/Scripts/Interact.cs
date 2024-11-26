@@ -5,10 +5,11 @@ using UnityEngine;
 
 public class Interact : MonoBehaviour
 {
-    [SerializeField] bool heroInRange;
+    public bool heroInRange;
     private SpriteRenderer sprite;
-    public Inventory inventory;
-    private Shelf shelf;
+    [SerializeField] Inventory inventory;
+    [SerializeField] Shelf shelf;
+    [SerializeField] GameObject empty;
     private void Awake()
     {
         sprite = GetComponentInChildren<SpriteRenderer>();
@@ -24,8 +25,14 @@ public class Interact : MonoBehaviour
             {
                 if (Input.GetKeyDown(KeyCode.E))
                 {
+                    if (shelf.item == Item.ItemType.None)
+                    {
+                        return;
+                    }
                     if (shelf.count == 0)
                     {
+                        Instantiate(empty, shelf.transform.position, shelf.transform.rotation);
+                        Destroy(transform.parent.gameObject);
                         return;
                     }
                     shelf.count--;
@@ -38,7 +45,7 @@ public class Interact : MonoBehaviour
                             {
                                 // Увеличиваем количество предметов
                                 inventory.Items[i] = new Inventory.ItemsList(inventory.Items[i].Item, inventory.Items[i].Count + 1);
-                                
+
                                 return;
                             }
                         }
@@ -60,6 +67,7 @@ public class Interact : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
+            inventory = collision.GetComponent<Inventory>();
             heroInRange = true;
         }
     }
@@ -67,6 +75,7 @@ public class Interact : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
+            inventory = null;
             heroInRange = false;
         }
     }
