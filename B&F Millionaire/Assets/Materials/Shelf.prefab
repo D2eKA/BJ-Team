@@ -74,12 +74,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 2fb9a68e48c7ca74e97ad296129d6378, type: 3}
+  m_Sprite: {fileID: 2102683661, guid: 2fb9a68e48c7ca74e97ad296129d6378, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.36, y: 0.37}
+  m_Size: {x: 1.125, y: 1.15625}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -122,7 +122,7 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 1.125, y: 1.15625}
-    newSize: {x: 0.36, y: 0.37}
+    newSize: {x: 1.125, y: 1.15625}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -141,7 +141,7 @@ GameObject:
   - component: {fileID: 8558322006069819386}
   - component: {fileID: 3376891873478710186}
   - component: {fileID: 3433871778671750873}
-  - component: {fileID: 3812075954273215639}
+  - component: {fileID: 3295043953278278989}
   m_Layer: 0
   m_Name: ShelfRange
   m_TagString: Shelf
@@ -205,7 +205,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -213,7 +213,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!61 &3433871778671750873
@@ -261,7 +261,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &3812075954273215639
+--- !u!114 &3295043953278278989
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -270,13 +270,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 2853456440976403736}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4014bd33e74cbc3468af50aad4b1df8b, type: 3}
+  m_Script: {fileID: 11500000, guid: ae83048484cbf8c4ba5f1cec39d90e65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   heroInRange: 0
+  box_sprite: {fileID: 9173831188574008348}
   inventory: {fileID: 0}
   shelf: {fileID: 0}
   empty: {fileID: 0}
+  active: {fileID: 549470199, guid: 2fb9a68e48c7ca74e97ad296129d6378, type: 3}
+  unactive: {fileID: 2102683661, guid: 2fb9a68e48c7ca74e97ad296129d6378, type: 3}
 --- !u!1 &5522977123207985926
 GameObject:
   m_ObjectHideFlags: 0

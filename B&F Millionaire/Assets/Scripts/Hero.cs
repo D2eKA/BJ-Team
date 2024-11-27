@@ -4,8 +4,6 @@ using UnityEngine;
 public class Hero : MonoBehaviour
 {
     [SerializeField] private float speed = 1f;
-    //[SerializeField] private float interactionRadius = 1f; // Радиус взаимодействия
-    //[SerializeField] private LayerMask interactableLayer;  // Слой для объектов, с которыми можно взаимодействовать
 
     private Rigidbody2D rb;
     private SpriteRenderer sprite;
@@ -25,36 +23,42 @@ public class Hero : MonoBehaviour
         anim = GetComponent<Animator>();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         State = States.idle;
-
         // Передвижение
         if (Input.GetButton("Horizontal"))
             HorizontalMove();
         if (Input.GetButton("Vertical"))
             VerticalMove();
-
+    }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+            State = States.interact;
     }
 
     private void HorizontalMove()
     {
         State = States.move;
-        Vector3 dir = transform.right * Input.GetAxis("Horizontal");
-        transform.position = Vector3.MoveTowards(transform.position, transform.position + dir, speed * Time.deltaTime);
+        Vector2 dir = transform.right * Input.GetAxis("Horizontal");
+        Vector2 trans_pos = (Vector2)transform.position;
+        transform.position = Vector2.MoveTowards(transform.position, trans_pos + dir, speed * Time.deltaTime);
         sprite.flipX = dir.x < 0.0f;
     }
 
     private void VerticalMove()
     {
         State = States.move;
-        Vector3 dir = transform.up * Input.GetAxis("Vertical");
-        transform.position = Vector3.MoveTowards(transform.position, transform.position + dir, speed * Time.deltaTime);
+        Vector2 dir = transform.up * Input.GetAxis("Vertical");
+        Vector2 trans_pos = (Vector2)transform.position;
+        transform.position = Vector3.MoveTowards(transform.position, trans_pos + dir, speed * Time.deltaTime);
     }
 }
 
 public enum States
 {
     idle,
-    move
+    move,
+    interact
 }
