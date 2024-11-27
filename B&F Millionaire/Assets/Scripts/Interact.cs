@@ -10,6 +10,7 @@ public class Interact : MonoBehaviour
     [SerializeField] Inventory inventory;
     [SerializeField] Shelf shelf;
     [SerializeField] GameObject empty;
+    private GameObject clone;
     private void Awake()
     {
         sprite = GetComponentInChildren<SpriteRenderer>();
@@ -31,7 +32,8 @@ public class Interact : MonoBehaviour
                     }
                     if (shelf.count == 0)
                     {
-                        Instantiate(empty, shelf.transform.position, shelf.transform.rotation);
+                        clone = Instantiate(empty, shelf.transform.position, shelf.transform.rotation);
+                        clone.name = "Shelf";
                         Destroy(transform.parent.gameObject);
                         return;
                     }

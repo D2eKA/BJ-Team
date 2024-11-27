@@ -275,7 +275,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   heroInRange: 0
   inventory: {fileID: 0}
-  empty: {fileID: 5522977123207985926}
+  shelf: {fileID: 0}
+  empty: {fileID: 0}
 --- !u!1 &5522977123207985926
 GameObject:
   m_ObjectHideFlags: 0

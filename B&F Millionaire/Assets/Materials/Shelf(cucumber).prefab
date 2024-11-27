@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &1087919314546234147
+--- !u!1001 &7366057241217361670
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -56,6 +56,10 @@ PrefabInstance:
       propertyPath: count
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 3812075954273215639, guid: 3402b965aa4ef8c41baa73ced313d348, type: 3}
+      propertyPath: empty
+      value: 
+      objectReference: {fileID: 5522977123207985926, guid: 3402b965aa4ef8c41baa73ced313d348, type: 3}
     - target: {fileID: 5522977123207985926, guid: 3402b965aa4ef8c41baa73ced313d348, type: 3}
       propertyPath: m_Name
       value: Shelf(cucumber)
