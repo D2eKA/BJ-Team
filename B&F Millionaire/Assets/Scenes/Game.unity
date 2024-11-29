@@ -422,6 +422,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 657815243}
     m_Modifications:
+    - target: {fileID: 146180570517215393, guid: a1055d7720b6245408a8173c48595493, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 603264405679659628, guid: a1055d7720b6245408a8173c48595493, type: 3}
       propertyPath: Hero
       value: 
@@ -449,6 +453,14 @@ PrefabInstance:
     - target: {fileID: 5477127690292752375, guid: a1055d7720b6245408a8173c48595493, type: 3}
       propertyPath: m_Name
       value: Customer
+      objectReference: {fileID: 0}
+    - target: {fileID: 5477127690292752375, guid: a1055d7720b6245408a8173c48595493, type: 3}
+      propertyPath: m_Layer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5477127690292752375, guid: a1055d7720b6245408a8173c48595493, type: 3}
+      propertyPath: m_TagString
+      value: Buyer
       objectReference: {fileID: 0}
     - target: {fileID: 7833457663455278898, guid: a1055d7720b6245408a8173c48595493, type: 3}
       propertyPath: m_LocalPosition.x
@@ -532,7 +544,7 @@ MonoBehaviour:
   - {fileID: 1927258602}
   - {fileID: 2103176325}
   interactionDistance: 2
-  moveSpeed: 5
+  moveSpeed: 10
   stopDistance: 0.1
 --- !u!1 &637305965
 GameObject:
@@ -6268,6 +6280,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 657815243}
     m_Modifications:
+    - target: {fileID: 146180570517215393, guid: a1055d7720b6245408a8173c48595493, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 603264405679659628, guid: a1055d7720b6245408a8173c48595493, type: 3}
       propertyPath: Hero
       value: 
@@ -6295,6 +6311,14 @@ PrefabInstance:
     - target: {fileID: 5477127690292752375, guid: a1055d7720b6245408a8173c48595493, type: 3}
       propertyPath: m_Name
       value: Customer
+      objectReference: {fileID: 0}
+    - target: {fileID: 5477127690292752375, guid: a1055d7720b6245408a8173c48595493, type: 3}
+      propertyPath: m_Layer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5477127690292752375, guid: a1055d7720b6245408a8173c48595493, type: 3}
+      propertyPath: m_TagString
+      value: Buyer
       objectReference: {fileID: 0}
     - target: {fileID: 7833457663455278898, guid: a1055d7720b6245408a8173c48595493, type: 3}
       propertyPath: m_LocalPosition.x
