@@ -1,6 +1,7 @@
 using Microsoft.Unity.VisualStudio.Editor;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,9 +18,11 @@ public class Interact : MonoBehaviour
     [SerializeField] Sprite active;
     [SerializeField] Sprite unactive;
     [SerializeField] GameObject slot_pref;
+    private GameObject slot_grid;
     private void Awake()
     {
         shelf = GetComponentInParent<Shelf>();
+        slot_grid = GameObject.Find("InventoryWindow");
     }
     private void Update()
     {
@@ -29,16 +32,7 @@ public class Interact : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.E))
             {
                 if (shelf.item == Item.ItemType.None)
-                {
                     return;
-                }
-                if (shelf.count == 0)
-                {
-                    clone = Instantiate(empty_pref, shelf.transform.position, shelf.transform.rotation);
-                    clone.name = "Shelf";
-                    Destroy(transform.parent.gameObject);
-                    return;
-                }
                 shelf.count--;
                 if (inventory.Items.Count > 0)
                 {
@@ -48,6 +42,12 @@ public class Interact : MonoBehaviour
                         {
                             // Увеличиваем количество предметов
                             inventory.Items[i] = new Inventory.ItemsList(inventory.Items[i].Item, inventory.Items[i].Count + 1);
+                            UpdateSlot(slot_grid.transform.GetChild(i).gameObject, inventory.Items[i].Count);
+                            if (shelf.count == 0)
+                            {
+                                EmptyBox();
+                                return;
+                            }
                             return;
                         }
                     }
@@ -58,6 +58,11 @@ public class Interact : MonoBehaviour
                 {
                     inventory.Items.Add(new Inventory.ItemsList(shelf.item, 1));
                     CreateSlot(shelf.sprite);
+                }
+                if (shelf.count == 0)
+                {
+                    EmptyBox();
+                    return;
                 }
             }
         }
@@ -86,7 +91,19 @@ public class Interact : MonoBehaviour
     {
         GameObject slot = Instantiate(slot_pref, GameObject.Find("InventoryWindow").transform);
         slot.name = shelf.item.ToString();
-        
-       
+        UnityEngine.UI.Image icon = slot.transform.GetChild(0).gameObject.GetComponentAtIndex<UnityEngine.UI.Image>(2);
+        icon.sprite = sprite;
+    }
+    private void UpdateSlot(GameObject slot, int count)
+    {
+        TextMeshProUGUI text = slot.transform.GetChild(1).gameObject.GetComponentAtIndex<TextMeshProUGUI>(2);
+        text.text = count.ToString();
+    }
+    private void EmptyBox()
+    {
+        clone = Instantiate(empty_pref, shelf.transform.position, shelf.transform.rotation);
+        clone.name = "Shelf";
+        Destroy(transform.parent.gameObject);
+        return;
     }
 }

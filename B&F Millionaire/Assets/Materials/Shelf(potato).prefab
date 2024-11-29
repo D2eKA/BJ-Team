@@ -72,6 +72,10 @@ PrefabInstance:
       propertyPath: unactive
       value: 
       objectReference: {fileID: 344344100, guid: 7c2177a5c48af564098c8419e8458f01, type: 3}
+    - target: {fileID: 3295043953278278989, guid: 3402b965aa4ef8c41baa73ced313d348, type: 3}
+      propertyPath: empty_pref
+      value: 
+      objectReference: {fileID: 5522977123207985926, guid: 3402b965aa4ef8c41baa73ced313d348, type: 3}
     - target: {fileID: 3376891873478710186, guid: 3402b965aa4ef8c41baa73ced313d348, type: 3}
       propertyPath: m_Size.x
       value: 1.125
