@@ -280,6 +280,7 @@ MonoBehaviour:
   empty: {fileID: 0}
   active: {fileID: 549470199, guid: 2fb9a68e48c7ca74e97ad296129d6378, type: 3}
   unactive: {fileID: 2102683661, guid: 2fb9a68e48c7ca74e97ad296129d6378, type: 3}
+  slot: {fileID: 4643660718482487772, guid: 825cfa0fbe48ac449995744e14649884, type: 3}
 --- !u!1 &5522977123207985926
 GameObject:
   m_ObjectHideFlags: 0
@@ -328,3 +329,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item: 0
   count: 0
+  sprite: {fileID: 0}

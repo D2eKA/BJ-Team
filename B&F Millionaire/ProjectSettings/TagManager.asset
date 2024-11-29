@@ -4,8 +4,6 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - apple
-  - green_grape
   - Shelf
   layers:
   - Default

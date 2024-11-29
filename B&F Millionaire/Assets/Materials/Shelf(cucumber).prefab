@@ -56,6 +56,10 @@ PrefabInstance:
       propertyPath: count
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 2257565552698544271, guid: 3402b965aa4ef8c41baa73ced313d348, type: 3}
+      propertyPath: sprite
+      value: 
+      objectReference: {fileID: -1439983748, guid: 679cfd5eee8c3ce49bc629b340d3beaf, type: 3}
     - target: {fileID: 3295043953278278989, guid: 3402b965aa4ef8c41baa73ced313d348, type: 3}
       propertyPath: empty
       value: 

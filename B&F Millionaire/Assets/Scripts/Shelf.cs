@@ -6,4 +6,5 @@ public class Shelf : MonoBehaviour
 {
     public Item.ItemType item;
     public int count;
+    public Sprite sprite;
 }
