@@ -77,28 +77,29 @@ public class BuyerMovement : MonoBehaviour
     private void SetTarget(Transform target)
     {
         currentTarget = target;
+        Debug.Log($"Новая цель: {target.position}"); // Отладочное сообщение
         movement = Vector2.zero;
     }
 
     private void MoveToWaypoints()
-{
-    if (waypoints.Count == 0 || waypointIndex >= waypoints.Count)
     {
-        // Все точки маршрута пройдены
-        currentState = BuyerState.Leaving; // Покупатель уходит
-        return;
-    }
+        if (waypoints.Count == 0 || waypointIndex >= waypoints.Count)
+        {
+            // Все точки маршрута пройдены
+            currentState = BuyerState.Leaving; // Покупатель уходит
+            return;
+        }
 
-    // Устанавливаем текущую точку маршрута как цель
-    SetTarget(waypoints[waypointIndex]);
-    MoveToTarget();
+        // Устанавливаем текущую точку маршрута как цель
+        SetTarget(waypoints[waypointIndex]);
+        MoveToTarget();
 
-    // Проверяем, достиг ли покупатель текущей точки
-    if (Vector2.Distance(transform.position, waypoints[waypointIndex].position) <= stopDistance)
-    {
-        waypointIndex++; // Переходим к следующей точке маршрута
+        // Проверяем, достиг ли покупатель текущей точки
+        if (Vector2.Distance(transform.position, waypoints[waypointIndex].position) <= stopDistance)
+        {
+            waypointIndex++; // Переходим к следующей точке маршрута
+        }
     }
-}
 
     private void MoveToTarget()
     {
@@ -113,7 +114,7 @@ public class BuyerMovement : MonoBehaviour
             {
                 if (isTableOccupied)
                 {
-                    JoinQueue();
+                    JoinQueue();  // Стол занят, покупатель идет в очередь
                 }
                 else
                 {
@@ -156,13 +157,27 @@ public class BuyerMovement : MonoBehaviour
 
     private void WaitForTable()
     {
+        // Найдем первую свободную позицию в очереди и направим покупателя туда
+        foreach (Transform queuePoint in queuePositions)
+        {
+            if (!IsPositionOccupied(queuePoint)) // Проверяем, не занята ли эта позиция
+            {
+                SetTarget(queuePoint); // Устанавливаем точку очереди как цель
+                currentState = BuyerState.WaitingInQueue; // Меняем состояние на ожидание в очереди
+                Debug.Log($"Покупатель занял очередь на позиции: {queuePoint.position}");
+                return;
+            }
+        }
+
+        // Если покупатель уже на свободной позиции и стол не занят, он может двигаться к столу
         if (!isTableOccupied && waitingQueue.Peek() == this)
         {
-            waitingQueue.Dequeue();
+            waitingQueue.Dequeue();  // Удаляем текущего покупателя из очереди
             currentState = BuyerState.MovingToTable;
-            SetTarget(table);
+            SetTarget(table);  // Направляем покупателя к столу
         }
     }
+
 
     private void WaitForHeroInteraction()
     {
@@ -202,7 +217,6 @@ public class BuyerMovement : MonoBehaviour
         }
         return false; // Точка свободна
     }
-
 
     public void NotifyTableAvailable()
     {
