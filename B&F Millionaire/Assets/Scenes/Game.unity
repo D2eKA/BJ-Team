@@ -1720,6 +1720,21 @@ MonoBehaviour:
   hero: {fileID: 1824298584}
   customersInQueue: []
   interactionDistance: 2
+--- !u!114 &881777853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 532519379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 547966ca553ed0b409bd5aa69745cdf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  queueManager: {fileID: 787850674}
+  hero: {fileID: 1824298584}
+  interactionDistance: 2
 --- !u!1001 &968556773
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6563,6 +6578,7 @@ MonoBehaviour:
   customerPrefab: {fileID: 532519379}
   spawnPoint: {fileID: 1519166625}
   spawnInterval: 2
+  maxCustomersPerDay: 6
 --- !u!4 &1620538944
 Transform:
   m_ObjectHideFlags: 0
@@ -6795,7 +6811,6 @@ GameObject:
   - component: {fileID: 1824298582}
   - component: {fileID: 1824298589}
   - component: {fileID: 1824298587}
-  - component: {fileID: 1824298592}
   m_Layer: 0
   m_Name: Hero
   m_TagString: Player
@@ -6990,19 +7005,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &1824298592
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1824298581}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 547966ca553ed0b409bd5aa69745cdf3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  queueManager: {fileID: 787850674}
 --- !u!1001 &1828364517
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7362,16 +7364,20 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5477127690292752375, guid: a1055d7720b6245408a8173c48595493, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5477127690292752375, guid: a1055d7720b6245408a8173c48595493, type: 3}
       propertyPath: m_TagString
       value: Buyer
       objectReference: {fileID: 0}
     - target: {fileID: 7833457663455278898, guid: a1055d7720b6245408a8173c48595493, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 13.79
+      value: 14.93
       objectReference: {fileID: 0}
     - target: {fileID: 7833457663455278898, guid: a1055d7720b6245408a8173c48595493, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.67
+      value: 1.7
       objectReference: {fileID: 0}
     - target: {fileID: 7833457663455278898, guid: a1055d7720b6245408a8173c48595493, type: 3}
       propertyPath: m_LocalPosition.z
@@ -7418,6 +7424,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5477127690292752375, guid: a1055d7720b6245408a8173c48595493, type: 3}
       insertIndex: -1
       addedObject: {fileID: 881777852}
+    - targetCorrespondingSourceObject: {fileID: 5477127690292752375, guid: a1055d7720b6245408a8173c48595493, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 881777853}
   m_SourcePrefab: {fileID: 100100000, guid: a1055d7720b6245408a8173c48595493, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
