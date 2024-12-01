@@ -110,3 +110,49 @@
 //    } 
 
 //}
+using System;
+using UnityEngine;
+
+public class Customer : MonoBehaviour
+{
+    private Vector3 targetPosition;
+    private float moveSpeed = 2f; // Скорость передвижения
+    private bool isMoving = false;
+    private Action onReachedTarget; // Коллбек при достижении точки
+    private bool readyForInteraction = false; // Готовность к взаимодействию с героем
+
+    private void Update()
+    {
+        if (isMoving)
+        {
+            MoveTowardsTarget();
+        }
+    }
+
+    public void MoveTo(Vector3 position, Action onComplete = null)
+    {
+        targetPosition = position;
+        onReachedTarget = onComplete;
+        isMoving = true;
+    }
+
+    private void MoveTowardsTarget()
+    {
+        transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+        if (Vector3.Distance(transform.position, targetPosition) < 0.01f)
+        {
+            isMoving = false;
+            onReachedTarget?.Invoke();
+        }
+    }
+
+    public bool IsReadyForInteraction()
+    {
+        return readyForInteraction;
+    }
+
+    public void SetReadyForInteraction(bool ready)
+    {
+        readyForInteraction = ready;
+    }
+}
