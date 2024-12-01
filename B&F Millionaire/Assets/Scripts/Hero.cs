@@ -1,15 +1,31 @@
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Hero : MonoBehaviour
 {
-    [SerializeField] private float speed = 1f;
+    public int balance = 0;
+    public TextMeshProUGUI moneyText;
 
+    [SerializeField] private float speed = 1f;
     private Rigidbody2D rb;
     private SpriteRenderer sprite;
     private Animator anim;
 
+    private void Start()
+    {
+        UpdateMoneyDisplay();
+    }
 
+    public void AddMoney(int amount)
+    {
+        balance += amount;
+        UpdateMoneyDisplay(); 
+    }
+    private void UpdateMoneyDisplay()
+    {
+        moneyText.text = balance.ToString(); 
+    }
     private States State
     {
         get { return (States)anim.GetInteger("state"); }
@@ -36,6 +52,10 @@ public class Hero : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
             State = States.interact;
+        if (Input.GetKeyDown(KeyCode.Space)) //проверка изменений , заглушка
+        {
+            AddMoney(10);
+        }
     }
 
     private void HorizontalMove()

@@ -1713,13 +1713,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d70415b3872fa1429c669bd2c207df9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  queuePositions:
-  - {fileID: 1695937401}
-  - {fileID: 1968964933}
-  table: {fileID: 427025719}
-  hero: {fileID: 1824298584}
-  customersInQueue: []
-  interactionDistance: 2
 --- !u!114 &881777853
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1735,6 +1728,8 @@ MonoBehaviour:
   queueManager: {fileID: 787850674}
   hero: {fileID: 1824298584}
   interactionDistance: 2
+  invWindow: {fileID: 357261120}
+  moneyText: {fileID: 843900876}
 --- !u!1001 &968556773
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6830,6 +6825,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62c7f98f8781d094b862e0c52e55456f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  balance: 0
+  moneyText: {fileID: 843900876}
   speed: 6
 --- !u!212 &1824298583
 SpriteRenderer:
@@ -6933,6 +6930,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Items: []
+  ValInvetory: 0
 --- !u!50 &1824298590
 Rigidbody2D:
   serializedVersion: 4

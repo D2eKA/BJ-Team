@@ -43,6 +43,7 @@ public class Interact : MonoBehaviour
                             // Увеличиваем количество предметов
                             inventory.Items[i] = new Inventory.ItemsList(inventory.Items[i].Item, inventory.Items[i].Count + 1);
                             UpdateSlot(slot_grid.transform.GetChild(i).gameObject, inventory.Items[i].Count);
+                            inventory.ValInvetory += shelf.product.Cost;
                             if (shelf.count == 0)
                             {
                                 EmptyBox();
@@ -53,11 +54,13 @@ public class Interact : MonoBehaviour
                     }
                     inventory.Items.Add(new Inventory.ItemsList(shelf.product, 1));
                     CreateSlot(shelf.sprite);
+                    inventory.ValInvetory += shelf.product.Cost;
                 }
                 else
                 {
                     inventory.Items.Add(new Inventory.ItemsList(shelf.product, 1));
                     CreateSlot(shelf.sprite);
+                    inventory.ValInvetory += shelf.product.Cost;
                 }
                 if (shelf.count == 0)
                 {

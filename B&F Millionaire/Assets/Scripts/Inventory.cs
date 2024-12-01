@@ -18,4 +18,5 @@ public class Inventory : MonoBehaviour
         }
     }
     public List<ItemsList> Items = new List<ItemsList>();
+    public int ValInvetory = 0;
 }
