@@ -38,7 +38,7 @@ public class Interact : MonoBehaviour
                 {
                     for (int i = 0; i < inventory.Items.Count; i++)
                     {
-                        if (inventory.Items[i].Item == shelf.item)
+                        if (inventory.Items[i].Item.ItemT == shelf.item)
                         {
                             // Увеличиваем количество предметов
                             inventory.Items[i] = new Inventory.ItemsList(inventory.Items[i].Item, inventory.Items[i].Count + 1);
@@ -51,12 +51,12 @@ public class Interact : MonoBehaviour
                             return;
                         }
                     }
-                    inventory.Items.Add(new Inventory.ItemsList(shelf.item, 1));
+                    inventory.Items.Add(new Inventory.ItemsList(shelf.product, 1));
                     CreateSlot(shelf.sprite);
                 }
                 else
                 {
-                    inventory.Items.Add(new Inventory.ItemsList(shelf.item, 1));
+                    inventory.Items.Add(new Inventory.ItemsList(shelf.product, 1));
                     CreateSlot(shelf.sprite);
                 }
                 if (shelf.count == 0)

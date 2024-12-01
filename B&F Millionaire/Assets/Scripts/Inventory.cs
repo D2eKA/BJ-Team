@@ -7,14 +7,14 @@ public class Inventory : MonoBehaviour
     [System.Serializable]
     public struct ItemsList
     {
-        [HideInInspector] public string Name;
-        public Item.ItemType Item;
+        public string Name;
+        public Item.Product Item;
         public int Count;
-        public ItemsList(Item.ItemType item, int count)
+        public ItemsList(Item.Product item, int count)
         {
+            Name = item.Name;
             Item = item;
             Count = count;
-            Name = item.ToString();
         }
     }
     public List<ItemsList> Items = new List<ItemsList>();
