@@ -12,9 +12,11 @@ GameObject:
   - component: {fileID: 603264405679659628}
   - component: {fileID: 146180570517215393}
   - component: {fileID: 2548617584477815565}
-  m_Layer: 0
+  - component: {fileID: 2467382227612371726}
+  - component: {fileID: 1142533732479799684}
+  m_Layer: 5
   m_Name: Customer
-  m_TagString: Untagged
+  m_TagString: Buyer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -28,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 5477127690292752375}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11.18, y: -0.15, z: -1}
+  m_LocalPosition: {x: 14.93, y: 1.7, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -46,10 +48,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22cea62f5ef614e498abf7c5b8682400, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TargetPoint:
-  - {fileID: 0}
-  moveSpeed: 2.5
-  stopDistance: 0.1
 --- !u!212 &146180570517215393
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -129,3 +127,45 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &2467382227612371726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5477127690292752375}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abbf4c2818004a24ca963c15f61240df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  table: {fileID: 0}
+  hero: {fileID: 0}
+  waypoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  queuePositions:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  interactionDistance: 2
+  moveSpeed: 5
+  stopDistance: 0.1
+--- !u!114 &1142533732479799684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5477127690292752375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 547966ca553ed0b409bd5aa69745cdf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  queueManager: {fileID: 0}
+  hero: {fileID: 0}
+  interactionDistance: 2
+  invWindow: {fileID: 0}
+  moneyText: {fileID: 0}
