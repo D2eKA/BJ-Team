@@ -7,8 +7,6 @@ public class Hero : MonoBehaviour
     public int balance = 0;
     public TextMeshProUGUI moneyText;
 
-    public float happiness;//Уровень счастья клиента
-    public float serviceTime;//Время обслуживания клиента
 
     [SerializeField] private float speed = 1f;
     private Rigidbody2D rb;
@@ -18,8 +16,6 @@ public class Hero : MonoBehaviour
     private void Start()
     {
         UpdateMoneyDisplay();
-        happiness = 100f;
-        serviceTime = 0f;
     }
 
     public void AddMoney(int amount)
@@ -60,23 +56,10 @@ public class Hero : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space)) //проверка изменений , заглушка
         {
             AddMoney(10);
-            UpdateHappiness(1f);
         }
     }
 
-    // Метод для обновления счастья клиента
-    public void UpdateHappiness(float timeSpent)
-    {
-        serviceTime += timeSpent;
-        happiness -= timeSpent * 0.5f;
-        happiness = Mathf.Clamp(happiness, 0, 100);
-    }
-
-    // Метод для получения текущего уровня счастья
-    public float GetHappiness()
-    {
-        return happiness;
-    }
+    
 
     private void HorizontalMove()
     {
