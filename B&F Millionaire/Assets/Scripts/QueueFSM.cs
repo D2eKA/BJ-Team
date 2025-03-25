@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class BuyerMovement : MonoBehaviour
 {
@@ -12,17 +11,6 @@ public class BuyerMovement : MonoBehaviour
     [SerializeField] private float interactionDistance = 2f; // Расстояние для взаимодействия с героем
     [SerializeField] private float moveSpeed = 5f; // Скорость движения покупателя
     [SerializeField] private float stopDistance = 0.1f; // Минимальное расстояние для остановки перед целью
-
-    [Header("Happiness Settings")]
-    [SerializeField] private float maxHappiness = 100f; // Максимальный уровень счастья
-    [SerializeField] private float happinessDecreaseRate = 5f; // Скорость уменьшения счастья (в единицах в секунду)
-    [SerializeField] private float minHappinessThreshold = 30f; // Порог, при котором покупатель становится недовольным
-    [SerializeField] private Slider happinessSlider; // Ссылка на UI Slider для отображения счастья
-    [SerializeField] private Image happinessFill; // Ссылка на Image для изменения цвета
-    private float currentHappiness; // Текущий уровень счастья
-    private float timeInQueue = 0f; // Время, проведенное в очереди
-    private bool isHappy = true; // Флаг, указывающий на состояние покупателя
-    private Coroutine happinessCoroutine; // Для управления корутиной счастья
 
     private Rigidbody2D rb; // Ссылка на Rigidbody2D компонента для управления движением
     private Vector2 movement; // Направление движения
@@ -46,18 +34,11 @@ public class BuyerMovement : MonoBehaviour
 
     private BuyerState currentState; // Текущее состояние покупателя
 
-    private float happiness;
-
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         currentState = BuyerState.MovingToWaypoints; // Начальное состояние - движение по маршруту
         SetTarget(waypoints[0]); // Устанавливаем первую точку маршрута как цель
-        happiness = 100f;
-
-        // Инициализация шкалы счастья
-        currentHappiness = maxHappiness;
-        UpdateHappinessUI();
     }
 
     void Update()
@@ -87,70 +68,7 @@ public class BuyerMovement : MonoBehaviour
     {
         // Устанавливаем скорость Rigidbody2D, если движение активно
         rb.velocity = movement != Vector2.zero ? movement : Vector2.zero;
-
-        happinessCoroutine = StartCoroutine(DecreaseHappinessOverTime());
     }
-
-    private void StopHappinessDecrease()
-    {
-        if (happinessCoroutine != null)
-            StopCoroutine(happinessCoroutine);
-    }
-    private IEnumerator DecreaseHappinessOverTime()
-    {
-        while (currentHappiness > 0)
-        {
-            currentHappiness -= happinessDecreaseRate * Time.deltaTime;
-            UpdateHappinessUI();
-
-            // Проверяем, не стал ли покупатель недовольным
-            if (isHappy && currentHappiness <= minHappinessThreshold)
-            {
-                OnBecomeUnhappy();
-            }
-
-            yield return null;
-        }
-
-        // Если счастье достигло нуля
-        OnHappinessDepleted();
-    }
-
-    private void UpdateHappinessUI()
-    {
-        if (happinessSlider != null)
-        {
-            happinessSlider.value = currentHappiness / maxHappiness;
-
-            // Меняем цвет в зависимости от уровня счастья
-            if (happinessFill != null)
-            {
-                if (currentHappiness > minHappinessThreshold)
-                    happinessFill.color = Color.Lerp(Color.yellow, Color.green, currentHappiness / maxHappiness);
-                else
-                    happinessFill.color = Color.Lerp(Color.red, Color.yellow, currentHappiness / minHappinessThreshold);
-            }
-        }
-    }
-
-    private void OnBecomeUnhappy()
-    {
-        isHappy = false;
-        Debug.Log("Покупатель стал недоволен!");
-        // Здесь можно добавить визуальные эффекты или изменения поведения
-    }
-
-    private void OnHappinessDepleted()
-    {
-        Debug.Log("Покупатель полностью недоволен и уходит!");
-        // Прерываем обслуживание и уходим
-        if (currentState == BuyerState.InteractingWithTable)
-        {
-            isTableOccupied = false;
-        }
-        currentState = BuyerState.Leaving;
-    }
-
 
     private void SetTarget(Transform target)
     {
@@ -219,8 +137,6 @@ public class BuyerMovement : MonoBehaviour
             Debug.LogError("Нет мест для очереди!");
             currentState = BuyerState.Leaving;
             return;
-
-            
         }
 
         // Ищем свободную позицию в очереди
@@ -239,9 +155,6 @@ public class BuyerMovement : MonoBehaviour
         // Если очередь заполнена, покупатель уходит
         Debug.LogWarning("Очередь заполнена! Покупатель уходит.");
         currentState = BuyerState.Leaving;
-        // Начинаем отсчет счастья при вступлении в очередь
-        StartHappinessDecrease();
-        timeInQueue = Time.time;
     }
 
     private void WaitForTable()
@@ -263,12 +176,6 @@ public class BuyerMovement : MonoBehaviour
             Debug.Log("Покупатель завершил взаимодействие со столом.");
             isTableOccupied = false; // Освобождаем стол
             currentState = reachedWaypoints ? BuyerState.Leaving : BuyerState.MovingToWaypoints;
-            StopHappinessDecrease();
-            float timeSpent = Time.time - timeInQueue;
-            float happinessBonus = CalculateHappinessBonus(timeSpent);
-            currentHappiness = Mathf.Clamp(currentHappiness + happinessBonus, 0, maxHappiness);
-            UpdateHappinessUI();
-            currentState = reachedWaypoints ? BuyerState.Leaving : BuyerState.MovingToWaypoints;
 
             // Уведомляем следующего покупателя в очереди
             if (waitingQueue.Count > 0)
@@ -276,21 +183,6 @@ public class BuyerMovement : MonoBehaviour
                 waitingQueue.Peek().NotifyTableAvailable();
             }
         }
-    }
-
-    private float CalculateHappinessBonus(float timeSpent)
-    {
-        // Чем быстрее обслужили, тем больше бонус
-        // Например: максимальный бонус 30, минимальный 10
-        float maxBonus = 30f;
-        float minBonus = 10f;
-
-        // Предполагаем, что "хорошее" время обслуживания - 10 секунд
-        float goodTime = 10f;
-
-        // Чем меньше времени потрачено, тем больше бонус
-        float bonus = Mathf.Lerp(maxBonus, minBonus, timeSpent / goodTime);
-        return Mathf.Clamp(bonus, minBonus, maxBonus);
     }
 
     private void LeaveScene()
