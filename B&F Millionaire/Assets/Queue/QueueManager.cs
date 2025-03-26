@@ -8,6 +8,7 @@ public class QueueManager : MonoBehaviour
     [SerializeField] private List<Transform> queuePositions = new List<Transform>(); // Позиции в очереди
     [SerializeField] private Transform table; // Стол
     [SerializeField] private Transform exitDoor; // Выходная дверь
+    public SatisfactionBar satisfactionBar; //Шкала счастья
 
     private Queue<Customer> customerQueue = new Queue<Customer>(); // Очередь гостей
     private Customer currentCustomer; // Гость у стола
@@ -26,6 +27,7 @@ public class QueueManager : MonoBehaviour
             if (!isTableOccupied && customerQueue.Count == 1)
             {
                 MoveCustomerToTable();
+                satisfactionBar.NewBar();//////////////
             }
         }
         else
@@ -51,6 +53,7 @@ public class QueueManager : MonoBehaviour
         {
             Debug.Log("Гость ждет взаимодействия с героем.");
             currentCustomer.SetReadyForInteraction(true);
+            satisfactionBar.NewBar();//////////////
         });
 
         UpdateQueuePositions();

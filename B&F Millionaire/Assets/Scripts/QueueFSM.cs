@@ -11,6 +11,7 @@ public class BuyerMovement : MonoBehaviour
     [SerializeField] private float interactionDistance = 2f; // Расстояние для взаимодействия с героем
     [SerializeField] private float moveSpeed = 5f; // Скорость движения покупателя
     [SerializeField] private float stopDistance = 0.1f; // Минимальное расстояние для остановки перед целью
+    public SatisfactionBar satisfactionBar;
 
     private Rigidbody2D rb; // Ссылка на Rigidbody2D компонента для управления движением
     private Vector2 movement; // Направление движения
@@ -119,6 +120,7 @@ public class BuyerMovement : MonoBehaviour
                 {
                     isTableOccupied = true; // Занимаем стол
                     currentState = BuyerState.InteractingWithTable; // Переходим в состояние взаимодействия
+                    
                 }
             }
         }
@@ -181,6 +183,7 @@ public class BuyerMovement : MonoBehaviour
             if (waitingQueue.Count > 0)
             {
                 waitingQueue.Peek().NotifyTableAvailable();
+                
             }
         }
     }
@@ -211,6 +214,15 @@ public class BuyerMovement : MonoBehaviour
         {
             currentState = BuyerState.MovingToTable;
             SetTarget(table);
+            /////////////////////////
+            SatisfactionBar[] satisfactionBars = FindObjectsOfType<SatisfactionBar>();
+            Debug.Log("УРА");
+
+            // Выводим имена найденных объектов в консоль
+            foreach (SatisfactionBar bar in satisfactionBars)
+            {
+                Debug.Log("Найден объект: " + bar.gameObject.name);
+            }
         }
     }
 }

@@ -8,6 +8,7 @@ public class SatisfactionBar : MonoBehaviour
     public Image satisfactionBar;
     public float SatisAmount = 100f;
     public float secondsToAngry = 60f;
+    
     void Start()
     {
         satisfactionBar.fillAmount = SatisAmount / 100;
@@ -22,5 +23,9 @@ public class SatisfactionBar : MonoBehaviour
             satisfactionBar.fillAmount = SatisAmount / 100;
         }
         
+    }
+    public void NewBar()
+    {
+        SatisAmount = 100f;
     }
 }
