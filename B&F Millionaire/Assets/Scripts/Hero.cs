@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -7,7 +6,7 @@ public class Hero : MonoBehaviour
     public int balance = 0;
     public TextMeshProUGUI moneyText;
 
-    [SerializeField] private float speed = 1f;
+    [SerializeField] private float speed = 5f;
     private Rigidbody2D rb;
     private SpriteRenderer sprite;
     private Animator anim;
@@ -20,16 +19,18 @@ public class Hero : MonoBehaviour
     public void AddMoney(int amount)
     {
         balance += amount;
-        UpdateMoneyDisplay(); 
+        UpdateMoneyDisplay();
     }
+
     private void UpdateMoneyDisplay()
     {
-        moneyText.text = balance.ToString(); 
+        moneyText.text = balance.ToString();
     }
+
     private States State
     {
-        get { return (States)anim.GetInteger("state"); }
-        set { anim.SetInteger("state", (int)value); }
+        get => (States)anim.GetInteger("state");
+        set => anim.SetInteger("state", (int)value);
     }
 
     private void Awake()
@@ -41,38 +42,39 @@ public class Hero : MonoBehaviour
 
     private void FixedUpdate()
     {
-        State = States.idle;
-        // Передвижение
-        if (Input.GetButton("Horizontal"))
-            HorizontalMove();
-        if (Input.GetButton("Vertical"))
-            VerticalMove();
+        // Получаем ввод и нормализуем вектор направления
+        Vector2 direction = new Vector2(
+            Input.GetAxisRaw("Horizontal"),
+            Input.GetAxisRaw("Vertical")
+        ).normalized;
+
+        // Применяем движение
+        rb.velocity = direction * speed;
+
+        // Управление анимацией и поворотом
+        if (direction.magnitude > 0.1f)
+        {
+            State = States.move;
+            if (direction.x != 0)
+            {
+                sprite.flipX = direction.x < 0;
+            }
+        }
+        else
+        {
+            State = States.idle;
+        }
     }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.E))
             State = States.interact;
-        if (Input.GetKeyDown(KeyCode.Space)) //проверка изменений , заглушка
+
+        if (Input.GetKeyDown(KeyCode.Space)) // ура деньги, бесконечность не предел
         {
             AddMoney(10);
         }
-    }
-
-    private void HorizontalMove()
-    {
-        State = States.move;
-        Vector2 dir = transform.right * Input.GetAxis("Horizontal");
-        Vector2 trans_pos = (Vector2)transform.position;
-        transform.position = Vector2.MoveTowards(transform.position, trans_pos + dir, speed * Time.deltaTime);
-        sprite.flipX = dir.x < 0.0f;
-    }
-
-    private void VerticalMove()
-    {
-        State = States.move;
-        Vector2 dir = transform.up * Input.GetAxis("Vertical");
-        Vector2 trans_pos = (Vector2)transform.position;
-        transform.position = Vector3.MoveTowards(transform.position, trans_pos + dir, speed * Time.deltaTime);
     }
 }
 

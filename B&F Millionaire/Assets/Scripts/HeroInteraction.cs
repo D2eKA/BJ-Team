@@ -28,11 +28,12 @@ public class HeroInteraction : MonoBehaviour
         inv.Items.Clear(); 
 
         int count = invWindow.transform.childCount;
-        while (count > 0)
+        for (int i = invWindow.transform.childCount - 1; i >= 0; i--)
         {
-            Destroy(invWindow.transform.GetChild(0).gameObject);
-            count--;
+            Destroy(invWindow.transform.GetChild(i).gameObject);
         }
+
+        
         moneyText.text = lol.balance.ToString();
     }
 }
