@@ -12,7 +12,7 @@ public class QueueManager : MonoBehaviour
 
     private Queue<Customer> customerQueue = new Queue<Customer>(); // Очередь гостей
     private Customer currentCustomer; // Гость у стола
-    private bool isTableOccupied = false; // Занят ли стол
+    public bool isTableOccupied = false; // Занят ли стол
 
     public event Action OnQueueSpaceAvailable; // Событие для уведомления о доступности места
 
@@ -27,7 +27,6 @@ public class QueueManager : MonoBehaviour
             if (!isTableOccupied && customerQueue.Count == 1)
             {
                 MoveCustomerToTable();
-                satisfactionBar.NewBar();//////////////
             }
         }
         else
@@ -52,10 +51,10 @@ public class QueueManager : MonoBehaviour
         currentCustomer.MoveTo(table.position, () =>
         {
             Debug.Log("Гость ждет взаимодействия с героем.");
-            currentCustomer.SetReadyForInteraction(true);
-            satisfactionBar.NewBar();//////////////
+            satisfactionBar.StartDecreasing();
         });
-
+        currentCustomer.SetReadyForInteraction(true);
+        
         UpdateQueuePositions();
     }
 
@@ -64,6 +63,9 @@ public class QueueManager : MonoBehaviour
         if (currentCustomer != null && currentCustomer.IsReadyForInteraction())
         {
             Debug.Log("Герой взаимодействует с гостем.");
+            ////
+            satisfactionBar.StopDecreasing();
+            satisfactionBar.NewBar();
             currentCustomer.SetReadyForInteraction(false);
             currentCustomer.MoveTo(exitDoor.position, () =>
             {
@@ -71,6 +73,7 @@ public class QueueManager : MonoBehaviour
                 isTableOccupied = false;
                 currentCustomer = null;
                 MoveCustomerToTable();
+                
             });
 
             OnQueueSpaceAvailable?.Invoke();

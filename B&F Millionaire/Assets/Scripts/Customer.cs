@@ -120,6 +120,7 @@ public class Customer : MonoBehaviour
     private bool isMoving = false;
     private Action onReachedTarget;
     private bool readyForInteraction = false;
+    public bool onTable;
 
     private void Update()
     {
