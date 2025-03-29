@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -6,7 +5,6 @@ public class Hero : MonoBehaviour
 {
     public int balance = 0;
     public TextMeshProUGUI moneyText;
-
 
     [SerializeField] private float speed = 1f;
     private Rigidbody2D rb;
@@ -21,16 +19,18 @@ public class Hero : MonoBehaviour
     public void AddMoney(int amount)
     {
         balance += amount;
-        UpdateMoneyDisplay(); 
+        UpdateMoneyDisplay();
     }
+
     private void UpdateMoneyDisplay()
     {
-        moneyText.text = balance.ToString(); 
+        moneyText.text = balance.ToString();
     }
+
     private States State
     {
-        get { return (States)anim.GetInteger("state"); }
-        set { anim.SetInteger("state", (int)value); }
+        get => (States)anim.GetInteger("state");
+        set => anim.SetInteger("state", (int)value);
     }
 
     private void Awake()
@@ -42,25 +42,40 @@ public class Hero : MonoBehaviour
 
     private void FixedUpdate()
     {
-        State = States.idle;
-        // ������������
-        if (Input.GetButton("Horizontal"))
-            HorizontalMove();
-        if (Input.GetButton("Vertical"))
-            VerticalMove();
+        // Ïîëó÷àåì ââîä è íîðìàëèçóåì âåêòîð íàïðàâëåíèÿ
+        Vector2 direction = new Vector2(
+            Input.GetAxisRaw("Horizontal"),
+            Input.GetAxisRaw("Vertical")
+        ).normalized;
+
+        // Ïðèìåíÿåì äâèæåíèå
+        rb.velocity = direction * speed;
+
+        // Óïðàâëåíèå àíèìàöèåé è ïîâîðîòîì
+        if (direction.magnitude > 0.1f)
+        {
+            State = States.move;
+            if (direction.x != 0)
+            {
+                sprite.flipX = direction.x < 0;
+            }
+        }
+        else
+        {
+            State = States.idle;
+        }
     }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.E))
             State = States.interact;
-        if (Input.GetKeyDown(KeyCode.Space)) //�������� ��������� , ��������
+
+        if (Input.GetKeyDown(KeyCode.Space)) // óðà äåíüãè, áåñêîíå÷íîñòü íå ïðåäåë
         {
             AddMoney(10);
         }
     }
-
-    
-
     private void HorizontalMove()
     {
         State = States.move;
