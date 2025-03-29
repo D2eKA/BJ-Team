@@ -116,10 +116,11 @@ using UnityEngine;
 public class Customer : MonoBehaviour
 {
     private Vector3 targetPosition;
-    private float moveSpeed = 2f; // Скорость передвижения
+    private float moveSpeed = 2f;
     private bool isMoving = false;
-    private Action onReachedTarget; // Коллбек при достижении точки
-    private bool readyForInteraction = false; // Готовность к взаимодействию с героем
+    private Action onReachedTarget;
+    private bool readyForInteraction = false;
+    public bool onTable;
 
     private void Update()
     {

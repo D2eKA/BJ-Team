@@ -6,7 +6,7 @@ public class Hero : MonoBehaviour
     public int balance = 0;
     public TextMeshProUGUI moneyText;
 
-    [SerializeField] private float speed = 5f;
+    [SerializeField] private float speed = 1f;
     private Rigidbody2D rb;
     private SpriteRenderer sprite;
     private Animator anim;
@@ -42,16 +42,16 @@ public class Hero : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Получаем ввод и нормализуем вектор направления
+        // ГЏГ®Г«ГіГ·Г ГҐГ¬ ГўГўГ®Г¤ ГЁ Г­Г®Г°Г¬Г Г«ГЁГ§ГіГҐГ¬ ГўГҐГЄГІГ®Г° Г­Г ГЇГ°Г ГўГ«ГҐГ­ГЁГї
         Vector2 direction = new Vector2(
             Input.GetAxisRaw("Horizontal"),
             Input.GetAxisRaw("Vertical")
         ).normalized;
 
-        // Применяем движение
+        // ГЏГ°ГЁГ¬ГҐГ­ГїГҐГ¬ Г¤ГўГЁГ¦ГҐГ­ГЁГҐ
         rb.velocity = direction * speed;
 
-        // Управление анимацией и поворотом
+        // Г“ГЇГ°Г ГўГ«ГҐГ­ГЁГҐ Г Г­ГЁГ¬Г Г¶ГЁГҐГ© ГЁ ГЇГ®ГўГ®Г°Г®ГІГ®Г¬
         if (direction.magnitude > 0.1f)
         {
             State = States.move;
@@ -71,10 +71,26 @@ public class Hero : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E))
             State = States.interact;
 
-        if (Input.GetKeyDown(KeyCode.Space)) // ура деньги, бесконечность не предел
+        if (Input.GetKeyDown(KeyCode.Space)) // ГіГ°Г  Г¤ГҐГ­ГјГЈГЁ, ГЎГҐГ±ГЄГ®Г­ГҐГ·Г­Г®Г±ГІГј Г­ГҐ ГЇГ°ГҐГ¤ГҐГ«
         {
             AddMoney(10);
         }
+    }
+    private void HorizontalMove()
+    {
+        State = States.move;
+        Vector2 dir = transform.right * Input.GetAxis("Horizontal");
+        Vector2 trans_pos = (Vector2)transform.position;
+        transform.position = Vector2.MoveTowards(transform.position, trans_pos + dir, speed * Time.deltaTime);
+        sprite.flipX = dir.x < 0.0f;
+    }
+
+    private void VerticalMove()
+    {
+        State = States.move;
+        Vector2 dir = transform.up * Input.GetAxis("Vertical");
+        Vector2 trans_pos = (Vector2)transform.position;
+        transform.position = Vector3.MoveTowards(transform.position, trans_pos + dir, speed * Time.deltaTime);
     }
 }
 
