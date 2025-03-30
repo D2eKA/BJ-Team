@@ -8,13 +8,24 @@ public class QueueManager : MonoBehaviour
     [SerializeField] private List<Transform> queuePositions = new List<Transform>(); // Позиции в очереди
     [SerializeField] private Transform table; // Стол
     [SerializeField] private Transform exitDoor; // Выходная дверь
-    public SatisfactionBar satisfactionBar; //Шкала счастья
+    private SatisfactionBar satisfactionBar; //Шкала счастья
 
     private Queue<Customer> customerQueue = new Queue<Customer>(); // Очередь гостей
     private Customer currentCustomer; // Гость у стола
     public bool isTableOccupied = false; // Занят ли стол
 
-    public event Action OnQueueSpaceAvailable; // Событие для уведомления о доступности места
+    public event Action OnQueueSpaceAvailable; // Событие для уведомления о доступности места\
+
+    public void Update()
+    {
+        if(GameObject.Find("Customers").transform.childCount > 1)
+        {
+            if (GameObject.Find("Customers").transform.GetChild(1).GetComponent<SatisfactionBar>())
+            {
+                satisfactionBar = GameObject.Find("Customers").transform.GetChild(1).GetComponent<SatisfactionBar>();
+            }
+        }
+    }
 
     public void AddCustomerToQueue(Customer customer)
     {

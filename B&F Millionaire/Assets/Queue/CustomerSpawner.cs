@@ -7,6 +7,7 @@ public class CustomerSpawner : MonoBehaviour
     [SerializeField] private Transform spawnPoint; // Точка появления гостей
     [SerializeField] private float spawnInterval = 5f; // Интервал появления
     [SerializeField] private int maxCustomersPerDay; // Максимальное количество покупателей за день
+    [SerializeField] private GameObject Customers;
 
     private QueueManager queueManager;
     private bool canSpawn = true; // Флаг для контроля генерации
@@ -35,6 +36,7 @@ public class CustomerSpawner : MonoBehaviour
             {
                 // Создаем нового гостя
                 GameObject newCustomer = Instantiate(customerPrefab, spawnPoint.position, Quaternion.identity);
+                newCustomer.transform.SetParent(Customers.transform);
                 Customer customerScript = newCustomer.GetComponent<Customer>();
                 queueManager.AddCustomerToQueue(customerScript);
 
