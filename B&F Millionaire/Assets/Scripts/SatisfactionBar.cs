@@ -29,7 +29,7 @@ public class SatisfactionBar : MonoBehaviour
         if(SatisAmount <= 0)
         {
             customer.HandleHeroInteraction();
-            Debug.Log("Гость устал ждать и уходит от вас!") 
+            Debug.Log("Гость устал ждать и уходит от вас!");
         }
     }
 
