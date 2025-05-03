@@ -13,7 +13,6 @@ public class Interact : MonoBehaviour
     [SerializeField] SpriteRenderer box_sprite;
     [SerializeField] Inventory inventory;
     [SerializeField] Shelf shelf;
-    [SerializeField] GameObject empty_pref;
     private GameObject clone;
     [SerializeField] Sprite active;
     [SerializeField] Sprite unactive;
@@ -31,42 +30,24 @@ public class Interact : MonoBehaviour
             box_sprite.sprite = active;
             if (Input.GetKeyDown(KeyCode.E))
             {
-                if (shelf.item == Item.ItemType.None)
+                if (shelf.item == Item.ItemType.None | shelf.count == 0)
                     return;
                 shelf.count--;
-                if (inventory.Items.Count > 0)
+                shelf.UpdateCountDisplay();
+                for (int i = 0; i < inventory.Items.Count; i++)
                 {
-                    for (int i = 0; i < inventory.Items.Count; i++)
+                    if (inventory.Items[i].Item.ItemT == shelf.item)
                     {
-                        if (inventory.Items[i].Item.ItemT == shelf.item)
-                        {
-                            // Увеличиваем количество предметов
-                            inventory.Items[i] = new Inventory.ItemsList(inventory.Items[i].Item, inventory.Items[i].Count + 1);
-                            UpdateSlot(slot_grid.transform.GetChild(i).gameObject, inventory.Items[i].Count);
-                            inventory.ValInvetory += shelf.product.Cost;
-                            if (shelf.count == 0)
-                            {
-                                EmptyBox();
-                                return;
-                            }
-                            return;
-                        }
+                        // Увеличиваем количество предметов
+                        inventory.Items[i] = new Inventory.ItemsList(inventory.Items[i].Item, inventory.Items[i].Count + 1);
+                        UpdateSlot(slot_grid.transform.GetChild(i).gameObject, inventory.Items[i].Count);
+                        inventory.ValInvetory += shelf.product.Cost;
+                        return;
                     }
-                    inventory.Items.Add(new Inventory.ItemsList(shelf.product, 1));
-                    CreateSlot(shelf.sprite);
-                    inventory.ValInvetory += shelf.product.Cost;
                 }
-                else
-                {
-                    inventory.Items.Add(new Inventory.ItemsList(shelf.product, 1));
-                    CreateSlot(shelf.sprite);
-                    inventory.ValInvetory += shelf.product.Cost;
-                }
-                if (shelf.count == 0)
-                {
-                    EmptyBox();
-                    return;
-                }
+                inventory.Items.Add(new Inventory.ItemsList(shelf.product, 1));
+                CreateSlot(shelf.sprite);
+                inventory.ValInvetory += shelf.product.Cost;
             }
         }
         if (!heroInRange)
@@ -101,12 +82,5 @@ public class Interact : MonoBehaviour
     {
         TextMeshProUGUI text = slot.transform.GetChild(1).gameObject.GetComponentAtIndex<TextMeshProUGUI>(2);
         text.text = count.ToString();
-    }
-    private void EmptyBox()
-    {
-        clone = Instantiate(empty_pref, shelf.transform.position, shelf.transform.rotation);
-        clone.name = "Shelf";
-        Destroy(transform.parent.gameObject);
-        return;
     }
 }

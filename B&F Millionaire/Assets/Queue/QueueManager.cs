@@ -133,4 +133,9 @@ public class QueueManager : MonoBehaviour
             index++;
         }
     }
+    
+    public Customer GetCurrentCustomer()
+    {
+        return currentCustomer;
+    }
 }

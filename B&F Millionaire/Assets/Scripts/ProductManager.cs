@@ -12,7 +12,8 @@ public class ProductManager : MonoBehaviour
     {
         public string Name;
         public Sprite Icon;
-        public int Cost;
+        public int SellingPrice; // Стоимость продажи покупателям
+        public int BuyingPrice;  // Стоимость покупки у поставщика
         public Item.ItemType ItemType;
     }
 
@@ -90,13 +91,29 @@ public class ProductManager : MonoBehaviour
         return "Неизвестный товар";
     }
 
-    // Получение стоимости товара
-    public int GetProductCost(Item.ItemType itemType)
+    // Получение стоимости продажи товара
+    public int GetProductSellingPrice(Item.ItemType itemType)
     {
         if (productDictionary.TryGetValue(itemType, out ProductData data))
         {
-            return data.Cost;
+            return data.SellingPrice;
         }
         return 0;
+    }
+
+    // Получение стоимости покупки товара
+    public int GetProductBuyingPrice(Item.ItemType itemType)
+    {
+        if (productDictionary.TryGetValue(itemType, out ProductData data))
+        {
+            return data.BuyingPrice;
+        }
+        return 0;
+    }
+
+    // Для обратной совместимости (используется в существующем коде)
+    public int GetProductCost(Item.ItemType itemType)
+    {
+        return GetProductSellingPrice(itemType);
     }
 }

@@ -11,29 +11,78 @@ public class HeroInteraction : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E)&& Vector2.Distance(transform.position, hero.position) <= interactionDistance)
+        if (Input.GetKeyDown(KeyCode.E) && Vector2.Distance(transform.position, hero.position) <= interactionDistance)
         {
             queueManager.HandleHeroInteraction();
-            ClearInventory();
-            
+            SellRequestedItem();
         }
-        else {return; }
+        else { return; }
     }
-    private void ClearInventory()
+    
+    private void SellRequestedItem()
     {
-        Hero lol = hero.gameObject.GetComponent<Hero>();
-        Inventory inv = hero.gameObject.GetComponent<Inventory>();
-        lol.balance += inv.ValInvetory;
-        inv.ValInvetory = 0;
-        inv.Items.Clear(); 
-
-        int count = invWindow.transform.childCount;
-        for (int i = invWindow.transform.childCount - 1; i >= 0; i--)
-        {
-            Destroy(invWindow.transform.GetChild(i).gameObject);
-        }
-
+        Hero playerHero = hero.gameObject.GetComponent<Hero>();
+        Inventory playerInventory = hero.gameObject.GetComponent<Inventory>();
         
-        moneyText.text = lol.balance.ToString();
+        // Получаем текущего покупателя и его запрос
+        Customer currentCustomer = queueManager.GetCurrentCustomer();
+        if (currentCustomer == null) return;
+        
+        Item.ItemType requestedItemType = currentCustomer.RequestedItem;
+        bool itemFound = false;
+        
+        for (int i = 0; i < playerInventory.Items.Count; i++)
+        {
+            if (playerInventory.Items[i].Item.ItemT == requestedItemType)
+            {
+                // Нашли запрошенный товар
+                itemFound = true;
+                
+                // Добавляем стоимость товара к балансу игрока
+                int itemCost = playerInventory.Items[i].Item.Cost;
+                playerHero.AddMoney(itemCost);
+                
+                // Обновляем значение инвентаря
+                playerInventory.ValInvetory -= itemCost;
+                
+                // Уменьшаем количество товара в инвентаре
+                if (playerInventory.Items[i].Count > 1)
+                {
+                    // Если товаров больше одного, уменьшаем количество
+                    Inventory.ItemsList updatedItem = new Inventory.ItemsList(
+                        playerInventory.Items[i].Item,
+                        playerInventory.Items[i].Count - 1
+                    );
+                    playerInventory.Items[i] = updatedItem;
+                    
+                    // Обновляем отображение количества в UI инвентаря
+                    GameObject slot = invWindow.transform.GetChild(i).gameObject;
+                    TextMeshProUGUI countText = slot.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+                    if (countText != null)
+                    {
+                        countText.text = updatedItem.Count.ToString();
+                    }
+                }
+                else
+                {
+                    // Если это последний товар, удаляем его из инвентаря
+                    playerInventory.Items.RemoveAt(i);
+                    
+                    // Удаляем слот из UI инвентаря
+                    Destroy(invWindow.transform.GetChild(i).gameObject);
+                }
+                
+                break;
+            }
+        }
+        
+        // Если товар не найден, выводим сообщение
+        if (!itemFound)
+        {
+            Debug.Log($"У игрока нет запрошенного товара: {requestedItemType}");
+            // Здесь можно добавить логику негативной реакции покупателя
+        }
+        
+        moneyText.text = playerHero.balance.ToString();
     }
 }
