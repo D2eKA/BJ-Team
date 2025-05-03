@@ -52,6 +52,7 @@ public class QueueManager : MonoBehaviour
         return customerQueue.Count >= queuePositions.Count;
     }
 
+    
     private void MoveCustomerToTable()
     {
         if (customerQueue.Count == 0) return;
@@ -59,14 +60,43 @@ public class QueueManager : MonoBehaviour
         currentCustomer = customerQueue.Dequeue();
         isTableOccupied = true;
 
+        // Назначаем случайный запрос
+        AssignRandomRequest(currentCustomer);
+
         currentCustomer.MoveTo(table.position, () =>
         {
             Debug.Log("Гость ждет взаимодействия с героем.");
             satisfactionBar.StartDecreasing();
+            
+            // Показываем запрос покупателя
+            currentCustomer.ShowRequest();
         });
         currentCustomer.SetReadyForInteraction(true);
         
         UpdateQueuePositions();
+    }
+
+    // Новый метод для назначения случайного запроса
+    private void AssignRandomRequest(Customer customer)
+    {
+        if (ProductManager.Instance != null)
+        {
+            // Получаем доступные типы товаров из ProductManager
+            List<Item.ItemType> availableTypes = ProductManager.Instance.GetAllProductTypes();
+            
+            if (availableTypes.Count > 0)
+            {
+                // Выбираем случайный товар
+                int randomIndex = UnityEngine.Random.Range(0, availableTypes.Count);
+                customer.RequestedItem = availableTypes[randomIndex];
+                return;
+            }
+        }
+        
+        // Запасной вариант, если ProductManager недоступен
+        int itemTypes = System.Enum.GetValues(typeof(Item.ItemType)).Length;
+        Item.ItemType randomItem = (Item.ItemType)UnityEngine.Random.Range(1, itemTypes); // Начиная с 1, чтобы пропустить None
+        customer.RequestedItem = randomItem;
     }
 
     public void HandleHeroInteraction()
@@ -74,7 +104,11 @@ public class QueueManager : MonoBehaviour
         if (currentCustomer != null && currentCustomer.IsReadyForInteraction())
         {
             Debug.Log("Герой взаимодействует с гостем.");
-            ////
+            
+            // Скрываем запрос покупателя
+            currentCustomer.HideRequest();
+            
+            // Существующий код
             satisfactionBar.StopDecreasing();
             satisfactionBar.NewBar();
             currentCustomer.SetReadyForInteraction(false);
@@ -84,7 +118,6 @@ public class QueueManager : MonoBehaviour
                 isTableOccupied = false;
                 currentCustomer = null;
                 MoveCustomerToTable();
-                
             });
 
             OnQueueSpaceAvailable?.Invoke();
