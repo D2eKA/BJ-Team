@@ -29,57 +29,60 @@ public class HeroInteraction : MonoBehaviour
         if (currentCustomer == null) return;
         
         Item.ItemType requestedItemType = currentCustomer.RequestedItem;
-        bool itemFound = false;
+        int requestedQuantity = currentCustomer.RequestedQuantity;
+        bool hasEnoughItems = false;
         
         for (int i = 0; i < playerInventory.Items.Count; i++)
         {
             if (playerInventory.Items[i].Item.ItemT == requestedItemType)
             {
-                // Нашли запрошенный товар
-                itemFound = true;
-                
-                // Добавляем стоимость товара к балансу игрока
-                int itemCost = playerInventory.Items[i].Item.Cost;
-                playerHero.AddMoney(itemCost);
-                
-                // Обновляем значение инвентаря
-                playerInventory.ValInvetory -= itemCost;
-                
-                // Уменьшаем количество товара в инвентаре
-                if (playerInventory.Items[i].Count > 1)
+                // Проверяем, достаточно ли у игрока товаров
+                if (playerInventory.Items[i].Count >= requestedQuantity)
                 {
-                    // Если товаров больше одного, уменьшаем количество
+                    hasEnoughItems = true;
+                    
+                    // Добавляем стоимость товаров к балансу игрока
+                    int itemCost = playerInventory.Items[i].Item.Cost * requestedQuantity;
+                    playerHero.AddMoney(itemCost);
+                    
+                    // Обновляем значение инвентаря
+                    playerInventory.ValInvetory -= playerInventory.Items[i].Item.Cost * requestedQuantity;
+                    
+                    // Уменьшаем количество товара в инвентаре
                     Inventory.ItemsList updatedItem = new Inventory.ItemsList(
                         playerInventory.Items[i].Item,
-                        playerInventory.Items[i].Count - 1
+                        playerInventory.Items[i].Count - requestedQuantity
                     );
-                    playerInventory.Items[i] = updatedItem;
                     
-                    // Обновляем отображение количества в UI инвентаря
-                    GameObject slot = invWindow.transform.GetChild(i).gameObject;
-                    TextMeshProUGUI countText = slot.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
-                    if (countText != null)
+                    if (updatedItem.Count <= 0)
                     {
-                        countText.text = updatedItem.Count.ToString();
+                        // Если товаров не осталось, удаляем их из инвентаря
+                        playerInventory.Items.RemoveAt(i);
+                        
+                        // Удаляем слот из UI инвентаря
+                        Destroy(invWindow.transform.GetChild(i).gameObject);
+                    }
+                    else
+                    {
+                        playerInventory.Items[i] = updatedItem;
+                        
+                        // Обновляем отображение количества в UI инвентаря
+                        GameObject slot = invWindow.transform.GetChild(i).gameObject;
+                        TextMeshProUGUI countText = slot.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+                        if (countText != null)
+                        {
+                            countText.text = updatedItem.Count.ToString();
+                        }
                     }
                 }
-                else
-                {
-                    // Если это последний товар, удаляем его из инвентаря
-                    playerInventory.Items.RemoveAt(i);
-                    
-                    // Удаляем слот из UI инвентаря
-                    Destroy(invWindow.transform.GetChild(i).gameObject);
-                }
-                
                 break;
             }
         }
         
-        // Если товар не найден, выводим сообщение
-        if (!itemFound)
+        // Если у игрока нет достаточного количества товаров, выводим сообщение
+        if (!hasEnoughItems)
         {
-            Debug.Log($"У игрока нет запрошенного товара: {requestedItemType}");
+            Debug.Log($"У игрока недостаточно товаров: {requestedItemType} x{requestedQuantity}");
             // Здесь можно добавить логику негативной реакции покупателя
         }
         

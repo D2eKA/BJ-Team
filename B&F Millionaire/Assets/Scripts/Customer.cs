@@ -1,19 +1,23 @@
 using System;
+using TMPro;
 using UnityEngine;
 
 public class Customer : MonoBehaviour
 {
-    private Vector3 targetPosition;
+     private Vector3 targetPosition;
     private float moveSpeed = 2f;
     private bool isMoving = false;
     private Action onReachedTarget;
     private bool readyForInteraction = false;
     public bool onTable;
 
-    // Новые поля для запроса
-    [SerializeField] private SpriteRenderer requestIconRenderer; // Компонент для отображения иконки
-    [SerializeField] private GameObject requestBubble; // Пузырь запроса (родительский объект)
+    // Поля для запроса
+    [SerializeField] private SpriteRenderer requestIconRenderer;
+    [SerializeField] private GameObject requestBubble;
+    [SerializeField] private TextMeshProUGUI requestQuantityText;
+    
     private Item.ItemType requestedItem = Item.ItemType.None;
+    private int requestedQuantity = 1;
 
     // Свойство для доступа к запрашиваемому товару
     public Item.ItemType RequestedItem
@@ -23,6 +27,17 @@ public class Customer : MonoBehaviour
         { 
             requestedItem = value;
             UpdateRequestIcon();
+        }
+    }
+    
+    // Новое свойство для доступа к количеству
+    public int RequestedQuantity
+    {
+        get { return requestedQuantity; }
+        set 
+        { 
+            requestedQuantity = value;
+            UpdateRequestQuantityText();
         }
     }
 
@@ -44,6 +59,15 @@ public class Customer : MonoBehaviour
             {
                 requestIconRenderer.sprite = productSprite;
             }
+        }
+    }
+    
+    // Новый метод для обновления текста количества
+    private void UpdateRequestQuantityText()
+    {
+        if (requestQuantityText != null)
+        {
+            requestQuantityText.text = "x" + requestedQuantity.ToString();
         }
     }
 

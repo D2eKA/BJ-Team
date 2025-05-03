@@ -76,14 +76,18 @@ public class QueueManager : MonoBehaviour
         UpdateQueuePositions();
     }
 
-    // Новый метод для назначения случайного запроса
+    // Метод для назначения случайного запроса
     private void AssignRandomRequest(Customer customer)
     {
+        // Генерируем случайное количество от 1 до 5
+        int randomQuantity = UnityEngine.Random.Range(1, 6);
+        customer.RequestedQuantity = randomQuantity;
+    
         if (ProductManager.Instance != null)
         {
             // Получаем доступные типы товаров из ProductManager
             List<Item.ItemType> availableTypes = ProductManager.Instance.GetAllProductTypes();
-            
+        
             if (availableTypes.Count > 0)
             {
                 // Выбираем случайный товар
@@ -92,7 +96,7 @@ public class QueueManager : MonoBehaviour
                 return;
             }
         }
-        
+    
         // Запасной вариант, если ProductManager недоступен
         int itemTypes = System.Enum.GetValues(typeof(Item.ItemType)).Length;
         Item.ItemType randomItem = (Item.ItemType)UnityEngine.Random.Range(1, itemTypes); // Начиная с 1, чтобы пропустить None
