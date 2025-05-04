@@ -16,22 +16,25 @@ public class HeroInteraction : MonoBehaviour
             queueManager.HandleHeroInteraction();
             SellRequestedItem();
         }
-        else { return; }
+        else
+        {
+            return;
+        }
     }
-    
+
     private void SellRequestedItem()
     {
         Hero playerHero = hero.gameObject.GetComponent<Hero>();
         Inventory playerInventory = hero.gameObject.GetComponent<Inventory>();
-        
+
         // Получаем текущего покупателя и его запрос
         Customer currentCustomer = queueManager.GetCurrentCustomer();
         if (currentCustomer == null) return;
-        
+
         Item.ItemType requestedItemType = currentCustomer.RequestedItem;
         int requestedQuantity = currentCustomer.RequestedQuantity;
         bool hasEnoughItems = false;
-        
+
         for (int i = 0; i < playerInventory.Items.Count; i++)
         {
             if (playerInventory.Items[i].Item.ItemT == requestedItemType)
@@ -40,32 +43,32 @@ public class HeroInteraction : MonoBehaviour
                 if (playerInventory.Items[i].Count >= requestedQuantity)
                 {
                     hasEnoughItems = true;
-                    
+
                     // Добавляем стоимость товаров к балансу игрока
                     int itemCost = playerInventory.Items[i].Item.Cost * requestedQuantity;
                     playerHero.AddMoney(itemCost);
-                    
+
                     // Обновляем значение инвентаря
                     playerInventory.ValInvetory -= playerInventory.Items[i].Item.Cost * requestedQuantity;
-                    
+
                     // Уменьшаем количество товара в инвентаре
                     Inventory.ItemsList updatedItem = new Inventory.ItemsList(
                         playerInventory.Items[i].Item,
                         playerInventory.Items[i].Count - requestedQuantity
                     );
-                    
+
                     if (updatedItem.Count <= 0)
                     {
                         // Если товаров не осталось, удаляем их из инвентаря
                         playerInventory.Items.RemoveAt(i);
-                        
+
                         // Удаляем слот из UI инвентаря
                         Destroy(invWindow.transform.GetChild(i).gameObject);
                     }
                     else
                     {
                         playerInventory.Items[i] = updatedItem;
-                        
+
                         // Обновляем отображение количества в UI инвентаря
                         GameObject slot = invWindow.transform.GetChild(i).gameObject;
                         TextMeshProUGUI countText = slot.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
@@ -74,18 +77,25 @@ public class HeroInteraction : MonoBehaviour
                             countText.text = updatedItem.Count.ToString();
                         }
                     }
+
+                    // Обновляем отображение ограничения инвентаря
+                    if (playerInventory.GetType().GetMethod("UpdateCapacityDisplay") != null)
+                    {
+                        playerInventory.UpdateCapacityDisplay();
+                    }
                 }
+
                 break;
             }
         }
-        
+
         // Если у игрока нет достаточного количества товаров, выводим сообщение
         if (!hasEnoughItems)
         {
             Debug.Log($"У игрока недостаточно товаров: {requestedItemType} x{requestedQuantity}");
             // Здесь можно добавить логику негативной реакции покупателя
         }
-        
+
         moneyText.text = playerHero.balance.ToString();
     }
 }

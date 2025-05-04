@@ -23,6 +23,7 @@ public class Interact : MonoBehaviour
         shelf = GetComponentInParent<Shelf>();
         slot_grid = GameObject.Find("InventoryWindow");
     }
+
     private void Update()
     {
         if (heroInRange)
@@ -32,29 +33,45 @@ public class Interact : MonoBehaviour
             {
                 if (shelf.item == Item.ItemType.None | shelf.count == 0)
                     return;
+
+                // Проверяем, есть ли место в инвентаре
+                if (!inventory.CanAddItems(1))
+                {
+                    Debug.Log("Инвентарь заполнен!");
+                    // Здесь можно добавить звуковой сигнал или визуальное оповещение
+                    return;
+                }
+
                 shelf.count--;
                 shelf.UpdateCountDisplay();
+
                 for (int i = 0; i < inventory.Items.Count; i++)
                 {
                     if (inventory.Items[i].Item.ItemT == shelf.item)
                     {
                         // Увеличиваем количество предметов
-                        inventory.Items[i] = new Inventory.ItemsList(inventory.Items[i].Item, inventory.Items[i].Count + 1);
+                        inventory.Items[i] =
+                            new Inventory.ItemsList(inventory.Items[i].Item, inventory.Items[i].Count + 1);
                         UpdateSlot(slot_grid.transform.GetChild(i).gameObject, inventory.Items[i].Count);
                         inventory.ValInvetory += shelf.product.Cost;
+                        inventory.UpdateCapacityDisplay(); // Обновляем отображение
                         return;
                     }
                 }
+
                 inventory.Items.Add(new Inventory.ItemsList(shelf.product, 1));
                 CreateSlot(shelf.sprite);
                 inventory.ValInvetory += shelf.product.Cost;
+                inventory.UpdateCapacityDisplay(); // Обновляем отображение
             }
         }
+
         if (!heroInRange)
         {
             box_sprite.sprite = unactive;
         }
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Player")
