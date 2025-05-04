@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class HeroInteraction : MonoBehaviour
 {
-    [SerializeField] private QueueManager queueManager;
     [SerializeField] private Transform hero;
     [SerializeField] private float interactionDistance = 2f;
+    [SerializeField] private AudioSource readySound;
+    [SerializeField] private AudioSource errorSound;
     
     private Transform invWindow;
-
+    private QueueManager queueManager;
+    
     private void Start()
     {
         // Если переменная hero не назначена, ищем игрока автоматически
@@ -187,6 +189,8 @@ public class HeroInteraction : MonoBehaviour
                     }
                 }
             }
+            
+            readySound?.Play();
 
             // Добавляем деньги игроку
             playerHero.AddMoney(totalPrice);
@@ -198,6 +202,7 @@ public class HeroInteraction : MonoBehaviour
         }
         else
         {
+            errorSound?.Play();
             Debug.Log($"Недостаточно товаров для продажи: {requestedItemType} x{requestedQuantity}");
         }
     }

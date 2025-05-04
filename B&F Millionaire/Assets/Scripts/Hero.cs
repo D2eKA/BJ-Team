@@ -7,13 +7,31 @@ public class Hero : MonoBehaviour
     public TextMeshProUGUI moneyText;
 
     [SerializeField] public float speed = 1f;
+    
+    [Header("Аудио")]
+    [SerializeField] private AudioSource footstepsAudioSource; // Ссылка на аудио-источник
     private Rigidbody2D rb;
     private SpriteRenderer sprite;
     private Animator anim;
+    private bool isMoving = false;
 
     private void Start()
     {
         UpdateMoneyDisplay();
+        
+        // Проверяем наличие аудио-источника
+        if (footstepsAudioSource == null)
+        {
+            footstepsAudioSource = GetComponent<AudioSource>();
+            if (footstepsAudioSource == null)
+            {
+                footstepsAudioSource = gameObject.AddComponent<AudioSource>();
+            }
+        }
+        
+        // Настраиваем аудио-источник
+        footstepsAudioSource.loop = true;
+        footstepsAudioSource.playOnAwake = false;
     }
 
     public void AddMoney(int amount)
@@ -30,7 +48,40 @@ public class Hero : MonoBehaviour
     private States State
     {
         get => (States)anim.GetInteger("state");
-        set => anim.SetInteger("state", (int)value);
+        set 
+        {
+            anim.SetInteger("state", (int)value);
+            
+            // Управляем звуком шагов
+            if (value == States.move)
+            {
+                PlayFootsteps();
+            }
+            else
+            {
+                StopFootsteps();
+            }
+        }
+    }
+    
+    // Включаем звук шагов
+    private void PlayFootsteps()
+    {
+        if (!isMoving && footstepsAudioSource != null && footstepsAudioSource.clip != null)
+        {
+            footstepsAudioSource.Play();
+            isMoving = true;
+        }
+    }
+    
+    // Выключаем звук шагов
+    private void StopFootsteps()
+    {
+        if (isMoving && footstepsAudioSource != null)
+        {
+            footstepsAudioSource.Stop();
+            isMoving = false;
+        }
     }
 
     private void Awake()
@@ -42,16 +93,16 @@ public class Hero : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Ïîëó÷àåì ââîä è íîðìàëèçóåì âåêòîð íàïðàâëåíèÿ
+        // Получаем ввод и нормализуем вектор направления
         Vector2 direction = new Vector2(
             Input.GetAxisRaw("Horizontal"),
             Input.GetAxisRaw("Vertical")
         ).normalized;
 
-        // Ïðèìåíÿåì äâèæåíèå
+        // Применяем движение
         rb.velocity = direction * speed;
 
-        // Óïðàâëåíèå àíèìàöèåé è ïîâîðîòîì
+        // Управление анимацией и поворотом
         if (direction.magnitude > 0.1f)
         {
             State = States.move;
@@ -70,27 +121,12 @@ public class Hero : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
             State = States.interact;
-
-        if (Input.GetKeyDown(KeyCode.Space)) // óðà äåíüãè, áåñêîíå÷íîñòü íå ïðåäåë
+#if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.Space)) // ура деньги, бесконечность не предел
         {
             AddMoney(10);
         }
-    }
-    private void HorizontalMove()
-    {
-        State = States.move;
-        Vector2 dir = transform.right * Input.GetAxis("Horizontal");
-        Vector2 trans_pos = (Vector2)transform.position;
-        transform.position = Vector2.MoveTowards(transform.position, trans_pos + dir, speed * Time.deltaTime);
-        sprite.flipX = dir.x < 0.0f;
-    }
-
-    private void VerticalMove()
-    {
-        State = States.move;
-        Vector2 dir = transform.up * Input.GetAxis("Vertical");
-        Vector2 trans_pos = (Vector2)transform.position;
-        transform.position = Vector3.MoveTowards(transform.position, trans_pos + dir, speed * Time.deltaTime);
+#endif
     }
 }
 

@@ -17,6 +17,7 @@ public class Interact : MonoBehaviour
     [SerializeField] private Sprite active;
     [SerializeField] private Sprite unactive;
     [SerializeField] private GameObject slot_pref;
+    [SerializeField] private AudioSource takeSound;
     
     private void Awake()
     {
@@ -44,6 +45,8 @@ public class Interact : MonoBehaviour
 
                 shelf.count--;
                 shelf.UpdateCountDisplay();
+                
+                takeSound?.Play();
 
                 for (int i = 0; i < inventory.Items.Count; i++)
                 {
@@ -63,6 +66,7 @@ public class Interact : MonoBehaviour
                 CreateSlot(shelf.sprite);
                 inventory.ValInvetory += shelf.product.Cost;
                 inventory.UpdateCapacityDisplay(); // Обновляем отображение
+                Debug.Log("Play");
             }
         }
 

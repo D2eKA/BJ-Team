@@ -9,6 +9,7 @@ public class Customer : MonoBehaviour
     public float moveSpeed = 2f;
     [SerializeField] private Animator animator;
     [SerializeField] private SpriteRenderer characterSprite;
+    [SerializeField] private AudioSource newTask;
     
     [Header("Компоненты запросов")]
     [SerializeField] private SpriteRenderer requestIconRenderer;
@@ -221,7 +222,7 @@ public class Customer : MonoBehaviour
         UpdateRequestIcon();
         UpdateRequestQuantityText();
         requestBubble.SetActive(true);
-        
+        newTask.Play();
         Debug.Log($"Показан запрос товара: {requestedItem}, количество: {requestedQuantity}");
     }
     
