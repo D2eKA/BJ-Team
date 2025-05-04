@@ -13,7 +13,7 @@ public class Shelf : MonoBehaviour
     [SerializeField] private TextMeshProUGUI countText; // Добавляем поле для текста количества
     [SerializeField] private GameObject countDisplay; // Родительский объект с текстом
 
-    private void Awake()
+    private void Start()
     {
         product = new Item.Product(item);
         UpdateCountDisplay();

@@ -19,7 +19,7 @@ public class Inventory : MonoBehaviour
         }
     }
     
-    [SerializeField] private int maxCapacity = 50; // Максимальная вместимость инвентаря
+    [SerializeField] public int maxCapacity = 50; // Максимальная вместимость инвентаря
     [SerializeField] private TextMeshProUGUI capacityText; // Текст для отображения заполненности
     
     public List<ItemsList> Items = new List<ItemsList>();

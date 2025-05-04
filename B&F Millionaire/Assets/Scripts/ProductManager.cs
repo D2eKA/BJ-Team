@@ -5,7 +5,9 @@ public class ProductManager : MonoBehaviour
 {
     // Реализация синглтона
     public static ProductManager Instance { get; private set; }
-
+    
+    private float discountPercent = 0f;
+    
     // Структура данных о продукте
     [System.Serializable]
     public struct ProductData
@@ -96,7 +98,8 @@ public class ProductManager : MonoBehaviour
     {
         if (productDictionary.TryGetValue(itemType, out ProductData data))
         {
-            return data.SellingPrice;
+            float discountedPrice = data.SellingPrice;
+            return Mathf.RoundToInt(discountedPrice);
         }
         return 0;
     }
@@ -106,14 +109,15 @@ public class ProductManager : MonoBehaviour
     {
         if (productDictionary.TryGetValue(itemType, out ProductData data))
         {
-            return data.BuyingPrice;
+            float discountedPrice = data.BuyingPrice * (1 - discountPercent);
+            return Mathf.RoundToInt(discountedPrice);
         }
         return 0;
     }
-
-    // Для обратной совместимости (используется в существующем коде)
-    public int GetProductCost(Item.ItemType itemType)
+    
+    public void ApplyDiscount(float percent)
     {
-        return GetProductSellingPrice(itemType);
+        discountPercent = percent;
+        ShopManager.Instance.RefreshPrices();
     }
 }

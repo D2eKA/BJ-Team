@@ -11,6 +11,15 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] GameObject pause_menu;
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            UpgradeManager.Instance.ToggleUpgradePanel();
+        }
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            ShopManager.Instance.ToggleShop();
+        }
+        
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (pause_menu.activeSelf)

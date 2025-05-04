@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -21,7 +19,7 @@ public class ShopItem : MonoBehaviour
 
     private void Start()
     {
-        shopManager = FindObjectOfType<ShopManager>();
+        shopManager = ShopManager.Instance;
         
         if (quantityInputField != null)
         {
@@ -48,38 +46,28 @@ public class ShopItem : MonoBehaviour
     public void Initialize(Item.ItemType type)
     {
         productType = type;
-    
+
         if (ProductManager.Instance != null)
         {
             string name = ProductManager.Instance.GetProductName(type);
-            int price = ProductManager.Instance.GetProductBuyingPrice(type); // Используем цену покупки
             Sprite icon = ProductManager.Instance.GetProductSprite(type);
-        
-            if (icon != null && productIcon != null)
-            {
-                try
-                {
-                    var aspectFitter = productIcon.GetComponent<AspectRatioFitter>();
-                    if (aspectFitter != null)
-                    {
-                        float newAspectRatio = icon.rect.width / icon.rect.height;
-                        aspectFitter.aspectRatio = newAspectRatio;
-                    }
-                }
-                catch (System.NullReferenceException)
-                {
-                    Debug.LogWarning("Проблема с установкой пропорций для иконки товара");
-                }
-            }
 
             if (productNameText != null)
                 productNameText.text = name;
-            
-            if (productPriceText != null)
-                productPriceText.text = price.ToString() + " монет";
-            
+
             if (productIcon != null && icon != null)
+            {
                 productIcon.sprite = icon;
+            }
+        }
+    }
+
+    public void RefreshPrice()
+    {
+        if (ProductManager.Instance != null)
+        {
+            int price = ProductManager.Instance.GetProductBuyingPrice(productType);
+            productPriceText.text = price.ToString() + " монет";
         }
     }
 
@@ -90,7 +78,7 @@ public class ShopItem : MonoBehaviour
             shopManager.BuyProduct(productType, currentQuantity);
         }
     }
-    
+
     private void OnQuantityChanged(string value)
     {
         if (int.TryParse(value, out int quantity))
@@ -101,16 +89,15 @@ public class ShopItem : MonoBehaviour
         {
             currentQuantity = 1;
         }
-        
         quantityInputField.text = currentQuantity.ToString();
     }
-    
+
     private void IncreaseQuantity()
     {
         currentQuantity = Mathf.Min(currentQuantity + 1, maxQuantity);
         quantityInputField.text = currentQuantity.ToString();
     }
-    
+
     private void DecreaseQuantity()
     {
         currentQuantity = Mathf.Max(currentQuantity - 1, 1);

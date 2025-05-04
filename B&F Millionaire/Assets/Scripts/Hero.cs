@@ -6,7 +6,7 @@ public class Hero : MonoBehaviour
     public int balance = 0;
     public TextMeshProUGUI moneyText;
 
-    [SerializeField] private float speed = 1f;
+    [SerializeField] public float speed = 1f;
     private Rigidbody2D rb;
     private SpriteRenderer sprite;
     private Animator anim;
