@@ -187,15 +187,22 @@ public class QueueManager : MonoBehaviour
         }
     }
     
-    /// <summary>
-    /// Запуск генерации следующей волны после задержки
-    /// </summary>
     private void GenerateNextWaveAfterDelay()
     {
         currentWave++;
         Debug.Log($"Начинаем генерацию волны {currentWave}");
-        GenerateNextWave();
+    
+        // Добавить вызов мини-игры перед новой волной
+        if (currentWave > 1 && TaxInspectorGame.Instance != null)
+        {
+            TaxInspectorGame.Instance.OpenGame();
+        }
+        else
+        {
+            GenerateNextWave();
+        }
     }
+
     
     /// <summary>
     /// Генерация новой волны клиентов
@@ -382,4 +389,35 @@ public class QueueManager : MonoBehaviour
     }
     
     #endregion
+    
+    /// <summary>
+    /// Метод для продолжения игры после закрытия мини-игры
+    /// </summary>
+    public void ContinueAfterMinigame()
+    {
+        try
+        {
+            // Отменяем предыдущий вызов отложенной генерации волны, если он был запланирован
+            if (IsInvoking("GenerateNextWaveAfterDelay"))
+            {
+                CancelInvoke("GenerateNextWaveAfterDelay");
+                Debug.Log("Отменена запланированная генерация волны после мини-игры");
+            }
+        
+            // Запускаем генерацию следующей волны немедленно
+            Debug.Log($"Продолжаем игру после мини-игры, запускаем волну {currentWave}");
+            GenerateNextWave();
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Ошибка при продолжении игры после мини-игры: {e.Message}");
+        
+            // Запускаем генерацию в любом случае, чтобы игра не зависла
+            if (!IsInvoking("GenerateNextWaveAfterDelay"))
+            {
+                Invoke("GenerateNextWaveAfterDelay", 0.5f);
+                Debug.Log("Запланирована запасная генерация волны");
+            }
+        }
+    }
 }
