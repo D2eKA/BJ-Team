@@ -7,8 +7,8 @@ public class HeroInteraction : MonoBehaviour
     [SerializeField] private QueueManager queueManager;
     [SerializeField] private Transform hero;
     [SerializeField] private float interactionDistance = 2f;
-    public GameObject invWindow;
-    public TextMeshProUGUI moneyText;
+    
+    private Transform invWindow;
 
     private void Start()
     {
@@ -34,12 +34,8 @@ public class HeroInteraction : MonoBehaviour
             if (queueManager == null)
                 Debug.LogError("QueueManager не найден!");
         }
-        
-        // Находим инвентарь, если он не назначен
-        if (invWindow == null)
-        {
-            invWindow = GameObject.Find("InventoryWindow");
-        }
+
+        invWindow = Inventory.Instance.container;
     }
 
     private void Update()

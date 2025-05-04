@@ -38,16 +38,16 @@ public class UpgradeButton : MonoBehaviour
     private void UpdateUI()
     {
         if (levelText != null)
-            levelText.text = $"Уровень: {upgradeData.CurrentLevel}/{upgradeData.MaxLevel}";
+            levelText.text = $"LVL {upgradeData.CurrentLevel}/{upgradeData.MaxLevel}";
             
         bool isMaxLevel = upgradeData.CurrentLevel >= upgradeData.MaxLevel;
         
         if (costText != null)
         {
             if (!isMaxLevel)
-                costText.text = $"Стоимость: {upgradeData.GetCurrentCost()}";
+                costText.text = $"{upgradeData.GetCurrentCost()}";
             else
-                costText.text = "МАКС. УРОВЕНЬ";
+                costText.text = "-";
         }
         
         if (valueText != null)

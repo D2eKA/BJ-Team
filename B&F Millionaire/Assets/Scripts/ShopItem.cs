@@ -16,6 +16,7 @@ public class ShopItem : MonoBehaviour
     private ShopManager shopManager;
     private int currentQuantity = 1;
     private int maxQuantity = 99;
+    private AspectRatioFitter iconAspectRatioFitter;
 
     private void Start()
     {
@@ -41,6 +42,30 @@ public class ShopItem : MonoBehaviour
         {
             decreaseButton.onClick.AddListener(DecreaseQuantity);
         }
+        
+        // Настраиваем AspectRatioFitter для изображения
+        SetupAspectRatioFitter();
+    }
+
+    // Метод для настройки компонента AspectRatioFitter
+    private void SetupAspectRatioFitter()
+    {
+        if (productIcon != null)
+        {
+            // Получаем существующий компонент или добавляем новый
+            iconAspectRatioFitter = productIcon.GetComponent<AspectRatioFitter>();
+            if (iconAspectRatioFitter == null)
+            {
+                iconAspectRatioFitter = productIcon.gameObject.AddComponent<AspectRatioFitter>();
+                iconAspectRatioFitter.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
+            }
+            
+            // Если спрайт уже установлен, сразу настраиваем соотношение сторон
+            if (productIcon.sprite != null)
+            {
+                UpdateAspectRatio(productIcon.sprite);
+            }
+        }
     }
 
     public void Initialize(Item.ItemType type)
@@ -58,7 +83,20 @@ public class ShopItem : MonoBehaviour
             if (productIcon != null && icon != null)
             {
                 productIcon.sprite = icon;
+                
+                // Обновляем соотношение сторон на основе загруженного спрайта
+                UpdateAspectRatio(icon);
             }
+        }
+    }
+    
+    // Метод для обновления соотношения сторон на основе спрайта
+    private void UpdateAspectRatio(Sprite sprite)
+    {
+        if (iconAspectRatioFitter != null && sprite != null && sprite.rect.height > 0)
+        {
+            float aspectRatio = sprite.rect.width / sprite.rect.height;
+            iconAspectRatioFitter.aspectRatio = aspectRatio;
         }
     }
 
@@ -67,7 +105,7 @@ public class ShopItem : MonoBehaviour
         if (ProductManager.Instance != null)
         {
             int price = ProductManager.Instance.GetProductBuyingPrice(productType);
-            productPriceText.text = price.ToString() + " монет";
+            productPriceText.text = price.ToString();
         }
     }
 

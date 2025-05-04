@@ -17,7 +17,7 @@ public class ShelfRefiller : MonoBehaviour
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
         if (playerObject != null)
         {
-            playerInventory = playerObject.GetComponent<Inventory>();
+            playerInventory = Inventory.Instance;
         }
 
         if (refillPromptUI != null)
@@ -151,7 +151,7 @@ public class ShelfRefiller : MonoBehaviour
                     playerInventory.Items.RemoveAt(i);
 
                     // Удаляем слот из UI инвентаря
-                    GameObject invWindow = GameObject.Find("InventoryWindow");
+                    Transform invWindow = Inventory.Instance.container;
                     if (invWindow != null && i < invWindow.transform.childCount)
                     {
                         Destroy(invWindow.transform.GetChild(i).gameObject);

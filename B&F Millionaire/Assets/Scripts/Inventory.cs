@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,7 +25,21 @@ public class Inventory : MonoBehaviour
     
     public List<ItemsList> Items = new List<ItemsList>();
     public int ValInvetory = 0;
-    
+    public Transform container;
+    public static Inventory Instance;
+
+    private void Awake()
+    {
+        if (Instance)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
     private void Start()
     {
         UpdateCapacityDisplay();
@@ -55,7 +70,7 @@ public class Inventory : MonoBehaviour
     {
         if (capacityText != null)
         {
-            capacityText.text = $"Предметы: {CurrentItemCount}/{maxCapacity}";
+            capacityText.text = $"{CurrentItemCount}/{maxCapacity}";
             
             // Меняем цвет в зависимости от заполненности
             float fillRatio = (float)CurrentItemCount / maxCapacity;

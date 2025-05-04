@@ -7,12 +7,15 @@ public class Customer : MonoBehaviour
 {
     [Header("Основные настройки")]
     public float moveSpeed = 2f;
+    [SerializeField] private Animator animator;
+    [SerializeField] private SpriteRenderer characterSprite;
     
     [Header("Компоненты запросов")]
     [SerializeField] private SpriteRenderer requestIconRenderer;
     [SerializeField] private GameObject requestBubble;
     [SerializeField] private TextMeshProUGUI requestQuantityText;
     [SerializeField]  private SatisfactionBar satisfactionBar;
+    
     
     // Приватные поля для состояния клиента
     private Vector3 targetPosition;
@@ -64,6 +67,12 @@ public class Customer : MonoBehaviour
         {
             MoveTowardsTarget();
         }
+    
+        // Обновляем состояние аниматора
+        if (animator != null)
+        {
+            animator.SetInteger("state", isMoving ? 1 : 0);
+        }
     }
     
     // Проверка наличия необходимых компонентов
@@ -73,17 +82,23 @@ public class Customer : MonoBehaviour
         {
             Debug.LogError($"requestIconRenderer не назначен в {gameObject.name}!");
         }
-        
+    
         if (requestBubble == null)
         {
             Debug.LogError($"requestBubble не назначен в {gameObject.name}!");
         }
-        
+    
         if (requestQuantityText == null)
         {
             Debug.LogError($"requestQuantityText не назначен в {gameObject.name}!");
         }
+    
+        if (animator == null)
+        {
+            Debug.LogWarning($"Animator не назначен в {gameObject.name}! Анимации не будут работать.");
+        }
     }
+
     
     // Получение текущего SatisfactionBar
     public SatisfactionBar GetSatisfactionBar()
@@ -258,13 +273,35 @@ public class Customer : MonoBehaviour
 
     private void MoveTowardsTarget()
     {
+        // Определяем направление движения
+        Vector3 direction = targetPosition - transform.position;
+    
+        // Определяем, должен ли спрайт быть развернут
+        if (characterSprite != null)
+        {
+            // Если движемся влево (X-координата направления отрицательная)
+            if (direction.x < 0)
+            {
+                characterSprite.flipX = true; // Разворачиваем спрайт влево
+            }
+            // Если движемся вправо (X-координата направления положительная)
+            else if (direction.x > 0)
+            {
+                characterSprite.flipX = false; // Спрайт смотрит вправо (по умолчанию)
+            }
+        }
+    
+        // Перемещаем персонажа к целевой точке
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+    
+        // Проверяем, достигли ли цели
         if (Vector3.Distance(transform.position, targetPosition) < 0.01f)
         {
             isMoving = false;
             onReachedTarget?.Invoke();
         }
     }
+
 
     // Методы для взаимодействия
     public bool IsReadyForInteraction()

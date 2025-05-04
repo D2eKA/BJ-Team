@@ -10,18 +10,18 @@ using UnityEngine.UIElements;
 public class Interact : MonoBehaviour
 {
     public bool heroInRange;
-    [SerializeField] SpriteRenderer box_sprite;
-    [SerializeField] Inventory inventory;
-    [SerializeField] Shelf shelf;
+    [SerializeField] private SpriteRenderer box_sprite;
+    [SerializeField] private Inventory inventory;
+    [SerializeField] private Shelf shelf;
     private GameObject clone;
-    [SerializeField] Sprite active;
-    [SerializeField] Sprite unactive;
-    [SerializeField] GameObject slot_pref;
-    private GameObject slot_grid;
+    [SerializeField] private Sprite active;
+    [SerializeField] private Sprite unactive;
+    [SerializeField] private GameObject slot_pref;
+    
     private void Awake()
     {
         shelf = GetComponentInParent<Shelf>();
-        slot_grid = GameObject.Find("InventoryWindow");
+        inventory = Inventory.Instance;
     }
 
     private void Update()
@@ -52,7 +52,7 @@ public class Interact : MonoBehaviour
                         // Увеличиваем количество предметов
                         inventory.Items[i] =
                             new Inventory.ItemsList(inventory.Items[i].Item, inventory.Items[i].Count + 1);
-                        UpdateSlot(slot_grid.transform.GetChild(i).gameObject, inventory.Items[i].Count);
+                        UpdateSlot(inventory.container.GetChild(i).gameObject, inventory.Items[i].Count);
                         inventory.ValInvetory += shelf.product.Cost;
                         inventory.UpdateCapacityDisplay(); // Обновляем отображение
                         return;
@@ -90,7 +90,7 @@ public class Interact : MonoBehaviour
     }
     private void CreateSlot(Sprite sprite)
     {
-        GameObject slot = Instantiate(slot_pref, GameObject.Find("InventoryWindow").transform);
+        GameObject slot = Instantiate(slot_pref, inventory.container);
         slot.name = shelf.item.ToString();
         UnityEngine.UI.Image icon = slot.transform.GetChild(0).gameObject.GetComponentAtIndex<UnityEngine.UI.Image>(2);
         icon.sprite = sprite;
