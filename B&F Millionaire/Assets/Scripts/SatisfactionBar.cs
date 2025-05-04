@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class SatisfactionBar : MonoBehaviour
 {
-    public QueueManager customer;
+    public Customer customer;
     public GameObject satisfactionBar;
     public float SatisAmount = 100f;
     public float secondsToAngry = 180f;
@@ -18,7 +18,6 @@ public class SatisfactionBar : MonoBehaviour
         satisfactionBar.SetActive(false);
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (SatisAmount > 0 && isDecreasing)
@@ -26,9 +25,10 @@ public class SatisfactionBar : MonoBehaviour
             SatisAmount -= 100 / secondsToAngry * Time.deltaTime * 10;
             satisfactionBar.transform.localScale = new Vector3(SatisAmount/200, 0.07f, 0);
         }
-        if(SatisAmount <= 0)
+        if(SatisAmount <= 0 && customer != null)
         {
-            customer.HandleHeroInteraction();
+            // Клиент уходит сам, когда заканчивается терпение
+            customer.LeaveFromQueue();
             Debug.Log("Гость устал ждать и уходит от вас!");
         }
     }
@@ -44,6 +44,7 @@ public class SatisfactionBar : MonoBehaviour
         isDecreasing = false;
         satisfactionBar.SetActive(false);
     }
+    
     public void NewBar()
     {
         SatisAmount = 100f;

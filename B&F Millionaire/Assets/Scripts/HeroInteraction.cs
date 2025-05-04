@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -9,93 +10,199 @@ public class HeroInteraction : MonoBehaviour
     public GameObject invWindow;
     public TextMeshProUGUI moneyText;
 
+    private void Start()
+    {
+        // Если переменная hero не назначена, ищем игрока автоматически
+        if (hero == null)
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null)
+            {
+                hero = playerObj.transform;
+                Debug.Log("Автоматически найден игрок и назначен переменной hero");
+            }
+            else
+            {
+                Debug.LogError("Не удалось найти игрока! Убедитесь, что у объекта игрока есть тег 'Player'");
+            }
+        }
+        
+        // Если queueManager не назначен, ищем его
+        if (queueManager == null)
+        {
+            queueManager = FindObjectOfType<QueueManager>();
+            if (queueManager == null)
+                Debug.LogError("QueueManager не найден!");
+        }
+        
+        // Находим инвентарь, если он не назначен
+        if (invWindow == null)
+        {
+            invWindow = GameObject.Find("InventoryWindow");
+        }
+    }
+
     private void Update()
     {
+        // Проверка на null перед использованием переменной hero
+        if (hero == null)
+        {
+            Debug.LogError("Переменная hero не назначена! Назначьте её в инспекторе или добавьте тег 'Player' игроку.");
+            return;
+        }
+        
         if (Input.GetKeyDown(KeyCode.E) && Vector2.Distance(transform.position, hero.position) <= interactionDistance)
         {
-            queueManager.HandleHeroInteraction();
+            // Проверка на queueManager
+            if (queueManager == null)
+            {
+                Debug.LogError("QueueManager не назначен!");
+                return;
+            }
+            
+            // Сначала обрабатываем продажу текущему клиенту
             SellRequestedItem();
-        }
-        else
-        {
-            return;
+        
+            // Затем перемещаем очередь
+            queueManager.HandleHeroInteraction();
         }
     }
 
     private void SellRequestedItem()
     {
-        Hero playerHero = hero.gameObject.GetComponent<Hero>();
-        Inventory playerInventory = hero.gameObject.GetComponent<Inventory>();
+        if (hero == null || queueManager == null)
+        {
+            Debug.LogError("hero или queueManager не назначены!");
+            return;
+        }
+
+        Hero playerHero = hero.GetComponent<Hero>();
+        Inventory playerInventory = hero.GetComponent<Inventory>();
+
+        if (playerHero == null || playerInventory == null)
+        {
+            Debug.LogError("На объекте hero отсутствуют компоненты Hero или Inventory!");
+            return;
+        }
 
         // Получаем текущего покупателя и его запрос
         Customer currentCustomer = queueManager.GetCurrentCustomer();
-        if (currentCustomer == null) return;
+        if (currentCustomer == null)
+        {
+            Debug.Log("Нет покупателя для взаимодействия");
+            return;
+        }
 
         Item.ItemType requestedItemType = currentCustomer.RequestedItem;
+
+        // Проверка на случай, если товар не был назначен
+        if (requestedItemType == Item.ItemType.None)
+        {
+            Debug.LogWarning("Клиент запросил товар типа None. Переназначаем товар.");
+
+            // Переназначаем товар, если он не был назначен
+            if (ProductManager.Instance != null)
+            {
+                List<Item.ItemType> availableTypes = ProductManager.Instance.GetAllProductTypes();
+                availableTypes.RemoveAll(type => type == Item.ItemType.None);
+
+                if (availableTypes.Count > 0)
+                {
+                    int randomIndex = UnityEngine.Random.Range(0, availableTypes.Count);
+                    currentCustomer.RequestedItem = availableTypes[randomIndex];
+                    requestedItemType = currentCustomer.RequestedItem;
+                    Debug.Log($"Новый назначенный товар: {requestedItemType}");
+                }
+                else
+                {
+                    Debug.LogError("Нет доступных типов товаров!");
+                    return;
+                }
+            }
+            else
+            {
+                Debug.LogError("ProductManager.Instance равен null!");
+                return;
+            }
+        }
+
         int requestedQuantity = currentCustomer.RequestedQuantity;
+
+        // Проверяем, есть ли нужный товар в инвентаре
         bool hasEnoughItems = false;
+        int itemIndex = -1;
 
         for (int i = 0; i < playerInventory.Items.Count; i++)
         {
             if (playerInventory.Items[i].Item.ItemT == requestedItemType)
             {
-                // Проверяем, достаточно ли у игрока товаров
                 if (playerInventory.Items[i].Count >= requestedQuantity)
                 {
                     hasEnoughItems = true;
+                    itemIndex = i;
+                }
+                break;
+            }
+        }
 
-                    // Добавляем стоимость товаров к балансу игрока
-                    int itemCost = playerInventory.Items[i].Item.Cost * requestedQuantity;
-                    playerHero.AddMoney(itemCost);
+        // Если достаточно товаров для продажи
+        if (hasEnoughItems)
+        {
+            // Вычисляем стоимость продажи
+            int itemPrice = ProductManager.Instance.GetProductSellingPrice(requestedItemType);
+            int totalPrice = itemPrice * requestedQuantity;
 
-                    // Обновляем значение инвентаря
-                    playerInventory.ValInvetory -= playerInventory.Items[i].Item.Cost * requestedQuantity;
+            // Обновляем инвентарь игрока
+            Inventory.ItemsList updatedItem = new Inventory.ItemsList(
+                playerInventory.Items[itemIndex].Item,
+                playerInventory.Items[itemIndex].Count - requestedQuantity
+            );
 
-                    // Уменьшаем количество товара в инвентаре
-                    Inventory.ItemsList updatedItem = new Inventory.ItemsList(
-                        playerInventory.Items[i].Item,
-                        playerInventory.Items[i].Count - requestedQuantity
-                    );
+            // Если товаров не осталось, удаляем их из инвентаря
+            if (updatedItem.Count <= 0)
+            {
+                playerInventory.Items.RemoveAt(itemIndex);
 
-                    if (updatedItem.Count <= 0)
+                // Удаляем слот из UI инвентаря
+                if (invWindow != null)
+                {
+                    if (itemIndex < invWindow.transform.childCount)
                     {
-                        // Если товаров не осталось, удаляем их из инвентаря
-                        playerInventory.Items.RemoveAt(i);
-
-                        // Удаляем слот из UI инвентаря
-                        Destroy(invWindow.transform.GetChild(i).gameObject);
+                        Destroy(invWindow.transform.GetChild(itemIndex).gameObject);
                     }
-                    else
-                    {
-                        playerInventory.Items[i] = updatedItem;
+                }
+            }
+            else
+            {
+                playerInventory.Items[itemIndex] = updatedItem;
 
-                        // Обновляем отображение количества в UI инвентаря
-                        GameObject slot = invWindow.transform.GetChild(i).gameObject;
-                        TextMeshProUGUI countText = slot.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+                // Обновляем отображение количества в UI инвентаря
+                if (invWindow != null)
+                {
+                    if (itemIndex < invWindow.transform.childCount)
+                    {
+                        GameObject slot = invWindow.transform.GetChild(itemIndex).gameObject;
+                        TMPro.TextMeshProUGUI countText =
+                            slot.transform.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>();
                         if (countText != null)
                         {
                             countText.text = updatedItem.Count.ToString();
                         }
                     }
-
-                    // Обновляем отображение ограничения инвентаря
-                    if (playerInventory.GetType().GetMethod("UpdateCapacityDisplay") != null)
-                    {
-                        playerInventory.UpdateCapacityDisplay();
-                    }
                 }
-
-                break;
             }
-        }
 
-        // Если у игрока нет достаточного количества товаров, выводим сообщение
-        if (!hasEnoughItems)
+            // Добавляем деньги игроку
+            playerHero.AddMoney(totalPrice);
+
+            // Обновляем отображение вместимости инвентаря
+            playerInventory.UpdateCapacityDisplay();
+
+            Debug.Log($"Продано: {requestedItemType} x{requestedQuantity} за {totalPrice} монет");
+        }
+        else
         {
-            Debug.Log($"У игрока недостаточно товаров: {requestedItemType} x{requestedQuantity}");
-            // Здесь можно добавить логику негативной реакции покупателя
+            Debug.Log($"Недостаточно товаров для продажи: {requestedItemType} x{requestedQuantity}");
         }
-
-        moneyText.text = playerHero.balance.ToString();
     }
 }

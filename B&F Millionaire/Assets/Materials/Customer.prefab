@@ -370,10 +370,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22cea62f5ef614e498abf7c5b8682400, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onTable: 0
+  moveSpeed: 2
   requestIconRenderer: {fileID: 3651293990907663554}
   requestBubble: {fileID: 7142243751529199094}
   requestQuantityText: {fileID: 8946842282034010952}
+  satisfactionBar: {fileID: 1408486341221319666}
 --- !u!212 &146180570517215393
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -482,7 +483,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42b83b70812ad364b9820467e2f534c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  customer: {fileID: 0}
+  customer: {fileID: 603264405679659628}
   satisfactionBar: {fileID: 6337619972261406852}
   SatisAmount: 100
   secondsToAngry: 60
@@ -586,7 +587,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1961604386167429457
 Transform:
   m_ObjectHideFlags: 0

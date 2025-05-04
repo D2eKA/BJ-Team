@@ -27,7 +27,7 @@ public class CustomerSpawner : MonoBehaviour
         {
             yield return new WaitUntil(() => canSpawn); // ∆дем, пока спавн разрешен
 
-            if (queueManager.IsQueueFull())
+            if (queueManager.IsQueueFull)
             {
                 canSpawn = false; // ќстанавливаем генерацию, если очередь заполнена
                 yield return null;
